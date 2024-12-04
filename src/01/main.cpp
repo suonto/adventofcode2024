@@ -1,7 +1,19 @@
 #include <iostream>
 #include "01/main.h"
+#include "01/solve.h"
 
-uint8_t solve() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+const char *input = R"(
+3   4
+4   3
+2   5
+1   3
+3   9
+3   3
+)";
+
+int main()
+{
+    std::cout << "01 main solving input" << std::endl;
+    auto result = solve(input);
+    return result;
 }

@@ -8,8 +8,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Include directories
 include_directories(include)
 
-# Add the executable
+# Create a static library from the application code
+add_library(lib_01 STATIC src/01/solve.cpp)
+
+# Add the main executable
 add_executable(main_01 src/01/main.cpp)
+target_link_libraries(
+  main_01
+  lib_01
+)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -23,11 +30,11 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 # Add the test executable
-add_executable(test_01 tests/01/test_main.cpp)
-
+add_executable(test_01 tests/01/test_solve.cpp)
 target_link_libraries(
   test_01
   GTest::gtest_main
+  lib_01
 )
 
 include(GoogleTest)

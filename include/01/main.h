@@ -1,6 +1,8 @@
 #ifndef AOC_2024_01_H
 #define AOC_2024_01_H
 
-uint8_t solve();
+#include "01/solve.h"
 
-#endif
+int main();
+
+#endif // AOC_2024_01_H
