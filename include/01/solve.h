@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
-int solve(const char *);
+int solve1(const char *);
+int solve2(const char *);
 
 #endif // SOLVE_H

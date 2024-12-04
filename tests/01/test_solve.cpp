@@ -11,10 +11,16 @@ const char *example = R"(
 3   3
 )";
 
-TEST(Example, Solve)
+TEST(Example, Solve1)
 {
-    auto result = solve(example);
+    auto result = solve1(example);
     EXPECT_EQ(result, 11);
+}
+
+TEST(Example, Solve2)
+{
+    auto result = solve2(example);
+    EXPECT_EQ(result, 31);
 }
 
 int main(int argc, char **argv)
