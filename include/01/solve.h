@@ -3,6 +3,6 @@
 
 #include <cstdint>
 
-uint8_t solve(const char *);
+int solve(const char *);
 
 #endif // SOLVE_H
