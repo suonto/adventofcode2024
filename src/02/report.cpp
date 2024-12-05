@@ -1,8 +1,9 @@
 #include "02/report.h"
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
-Report::Report(std::vector<int> *row) : row(row), inc(1, 3), dec(-3, -1) {}
+Report::Report(std::vector<int> *row, int tolerance) : row(row), tolerance(tolerance), inc(1, 3), dec(-3, -1) {}
 
 Report::~Report()
 {
@@ -11,25 +12,43 @@ Report::~Report()
 
 bool Report::isSafe() const
 {
+    bool result = true;
     const Range *range = &dec;
     if (this->isIncreasing())
     {
         range = &inc;
     }
 
-    for (int i = 1; i < this->row->size(); i++)
+    int margin = tolerance;
+
+    for (int i = 1; i < row->size(); i++)
     {
-        int diff = this->row->at(i) - this->row->at(i - 1);
+        int diff = row->at(i) - row->at(i - 1);
         if (!range->contains(diff))
         {
-            return false;
+            if (margin == 0)
+            {
+                result = false;
+                break;
+            }
+            margin--;
+            std::cout << this->toString(row) << " removing index " << i << " number " << row->at(i) << std::endl;
+            row->erase(row->begin() + i);
+            i--; // Adjust the index to account for the removed element
         }
     }
 
-    return true;
+    std::cout << this->toString(row) << " safe? " << result << std::endl;
+
+    return result;
 }
 
 std::string Report::toString() const
+{
+    return this->toString(row);
+}
+
+std::string Report::toString(std::vector<int> *row) const
 {
     std::ostringstream oss;
     for (int i = 0; i < row->size(); i++)
@@ -45,5 +64,17 @@ std::string Report::toString() const
 
 bool Report::isIncreasing() const
 {
-    return this->row->at(0) < this->row->at(1);
+    int increasing = 0;
+    for (int i = 1; i < row->size(); i++)
+    {
+        if (this->row->at(0) < this->row->at(1))
+        {
+            increasing++;
+        }
+        if (increasing > tolerance)
+        {
+            return true;
+        }
+    }
+    return false;
 }

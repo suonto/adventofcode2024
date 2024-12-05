@@ -12,6 +12,6 @@ const char *input = R"(7 6 4 2 1
 int main()
 {
     std::cout << "01 main solving input" << std::endl;
-    auto result = solveA(input);
-    return result;
+    // solve(input);
+    return solve(input, 1);
 }

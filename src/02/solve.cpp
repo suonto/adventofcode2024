@@ -7,7 +7,7 @@
 #include "02/solve.h"
 #include "02/report.h"
 
-int solveA(const char *example)
+int solve(const char *example, int tolerance)
 {
     std::istringstream stream(example);
     std::string line;
@@ -25,7 +25,7 @@ int solveA(const char *example)
         {
             row->push_back(value);
         }
-        Report *report = new Report(row);
+        Report *report = new Report(row, tolerance);
         reports.push_back(report);
     }
 
@@ -33,7 +33,7 @@ int solveA(const char *example)
     for (int i = 0; i < reports.size(); i++)
     {
         bool safe = reports[i]->isSafe();
-        auto safeString = safe ? "is safe. Safe reports " : " is not safe. Safe reports ";
+        auto safeString = safe ? " is safe. Safe reports " : " is not safe. Safe reports ";
         if (safe)
         {
             safe_reports++;

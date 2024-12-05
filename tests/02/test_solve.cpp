@@ -33,8 +33,14 @@ TEST(Report, 1IsSafe)
 
 TEST(Example2, SolveA)
 {
-    auto result = solveA(example);
+    auto result = solve(example);
     EXPECT_EQ(result, 2);
+}
+
+TEST(Example2, SolveB)
+{
+    auto result = solve(example, 1);
+    EXPECT_EQ(result, 4);
 }
 
 int main(int argc, char **argv)
