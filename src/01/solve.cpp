@@ -42,7 +42,6 @@ int solve1(const char *example)
     return result;
 }
 
-
 int solve2(const char *example)
 {
     std::istringstream stream(example);
@@ -80,25 +79,26 @@ int solve2(const char *example)
     int rx = 0;
 
     // ascend the index of the lower number on sorted lists
-    while (l < left.size() || r < right.size()) {
-        if (left[l] < val) {
-            l++;
-            continue;
-        }
+    while (l < left.size() || r < right.size())
+    {
+        std::cout << "l: " << l << ", r: " << r << '\n';
 
-        if (right[r] < val) {
+        if (r < right.size() && right[r] < val)
+        {
             r++;
             continue;
         }
 
-        if (left[l] == val) {
+        if (l < left.size() && left[l] == val)
+        {
             lx++;
             std::cout << "l: " << l << " " << left[l] << " " << lx << '\n';
             l++;
             continue;
         }
 
-        if (right[r] == val) {
+        if (r < right.size() && right[r] == val)
+        {
             rx++;
             std::cout << "r: " << r << " " << right[r] << " " << rx << '\n';
             r++;
@@ -110,13 +110,14 @@ int solve2(const char *example)
         std::cout << val << " " << lx << " " << rx << " " << product << " " << result << '\n';
         lx = 0;
         rx = 0;
-        if (l == left.size()) {
+        if (l == left.size())
+        {
             break;
         }
         val = left[l];
         std::cout << "new val: " << val << '\n';
-
     }
+    std::cout << "l: " << l << ", r: " << r << '\n';
     std::cout << std::endl;
 
     return result;
