@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cmake -S . -B build && cmake --build build
-cd build && ctest -VV
+cd build && ctest -VV -- $@
 
