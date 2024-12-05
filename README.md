@@ -1,5 +1,10 @@
 # adventofcode2024
+## Run
+```
+./main_01.sh
+```
+
 ## Test
 ```
-cmake -S . -B build && cmake --build build && pushd build && ctest && popd
+./test.sh
 ```
