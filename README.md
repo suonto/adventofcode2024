@@ -5,6 +5,11 @@
 ```
 
 ## Test
+All tests:
 ```
 ./test.sh
+```
+Only day 2 tests:
+```
+./test.sh -R Day02
 ```
