@@ -24,7 +24,7 @@ size_t Instruction::processMultiplications()
             if (raw[i] == ',' && i > xPos)
             {
                 x = std::stoi(raw.substr(xPos, i - xPos));
-                std::cout << "x at " << xPos << " = " << x << '\n';
+                // std::cout << "x at " << xPos << " = " << x << '\n';
                 yPos = i + 1;
             }
             xPos = 0;
@@ -35,7 +35,7 @@ size_t Instruction::processMultiplications()
             if (raw[i] == ')' && i > yPos)
             {
                 y = std::stoi(raw.substr(yPos, i - yPos));
-                std::cout << "y at " << yPos << " = " << y << '\n';
+                // std::cout << "y at " << yPos << " = " << y << '\n';
                 auto product = x * y;
                 result += product;
                 std::cout << x << " * " << y << " = " << product << ", result = " << result << '\n';

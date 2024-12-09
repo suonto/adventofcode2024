@@ -14,7 +14,14 @@ int solveA(const char *example)
 
     while (std::getline(stream, line))
     {
-        result += Instruction(line).processMultiplications();
+        if (line.empty())
+        {
+            continue;
+        }
+        auto line_result = Instruction(line).processMultiplications();
+        result += line_result;
+        std::cout << line << '\n';
+        std::cout << line_result << " " << result << std::endl;
     }
 
     return result;
