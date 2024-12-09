@@ -7,12 +7,13 @@
 class Instruction
 {
 public:
-    Instruction(std::string);
+    Instruction(std::string, bool = false);
     // ~Instruction();
     size_t processMultiplications();
 
 private:
     std::string raw;
+    bool variant_b;
 };
 
 #endif // INSTRUCTION_H

@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 
-Instruction::Instruction(std::string s) : raw(s) {}
+Instruction::Instruction(std::string s, bool variant_b) : raw(s), variant_b(variant_b) {}
 
 size_t Instruction::processMultiplications()
 {
@@ -11,10 +11,23 @@ size_t Instruction::processMultiplications()
     size_t x = 0;
     size_t yPos = 0;
     size_t y = 0;
+    bool multiply = true;
 
-    for (size_t i = 4; i < raw.size(); i++)
+    for (size_t i = 3; i < raw.size(); i++)
     {
-        if (raw.substr(i - 4, 4) == "mul(")
+        std::cout << "substring at " << i - 3 << ": " << raw.substr(i - 3, 3) << '\n';
+        if (raw.substr(i - 3, 3) == "do(")
+        {
+            multiply = true;
+            std::cout << "multiply at " << i - 3 << '\n';
+        }
+
+        if (variant_b && i > 6 && raw.substr(i - 6, 6) == "don't(")
+        {
+            multiply = false;
+        }
+
+        if (multiply && i > 4 && raw.substr(i - 4, 4) == "mul(")
         {
             xPos = i;
         }
