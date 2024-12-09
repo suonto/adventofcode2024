@@ -13,21 +13,22 @@ size_t Instruction::processMultiplications()
     size_t y = 0;
     bool multiply = true;
 
-    for (size_t i = 3; i < raw.size(); i++)
+    for (size_t i = 4; i < raw.size(); i++)
     {
-        std::cout << "substring at " << i - 3 << ": " << raw.substr(i - 3, 3) << '\n';
-        if (raw.substr(i - 3, 3) == "do(")
+        // std::cout << i << " " << raw.substr(i - 4, 4) << '\n';
+        if (variant_b && raw.substr(i - 4, 4) == "do()")
         {
             multiply = true;
-            std::cout << "multiply at " << i - 3 << '\n';
+            std::cout << "do() at " << i - 4 << '\n';
         }
 
-        if (variant_b && i > 6 && raw.substr(i - 6, 6) == "don't(")
+        if (variant_b && i >= 7 && raw.substr(i - 7, 7) == "don't()")
         {
             multiply = false;
+            std::cout << "don't() at " << i - 7 << '\n';
         }
 
-        if (multiply && i > 4 && raw.substr(i - 4, 4) == "mul(")
+        if (multiply && raw.substr(i - 4, 4) == "mul(")
         {
             xPos = i;
         }
