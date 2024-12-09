@@ -11,14 +11,17 @@ include_directories(include)
 # Create a static library from the application code
 add_library(lib_01 STATIC src/01/solve.cpp)
 add_library(lib_02 STATIC src/02/solve.cpp src/02/report.cpp src/02/range.cpp)
+add_library(lib_03 STATIC src/03/solve.cpp src/03/instruction.cpp)
 
 # Add the main executable
 add_executable(main_01 src/01/main.cpp)
 add_executable(main_02 src/02/main.cpp)
+add_executable(main_03 src/03/main.cpp)
 
 # link mains to lib
 target_link_libraries(main_01 lib_01)
 target_link_libraries(main_02 lib_02)
+target_link_libraries(main_03 lib_03)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -34,12 +37,15 @@ enable_testing()
 # Add the test executable
 add_executable(test_01 tests/01/test_solve.cpp)
 add_executable(test_02 tests/02/test_solve.cpp)
+add_executable(test_03 tests/03/test_solve.cpp)
 
 # Link test executables
 target_link_libraries(test_01 GTest::gtest_main lib_01)
 target_link_libraries(test_02 GTest::gtest_main lib_02)
+target_link_libraries(test_03 GTest::gtest_main lib_03)
 
 include(GoogleTest)
 gtest_discover_tests(test_01)
 gtest_discover_tests(test_02)
+gtest_discover_tests(test_03)
 
