@@ -3,14 +3,16 @@
 #include <iostream>
 #include <algorithm>
 
-Report::Report(std::vector<int> *row, int tolerance) : row(row), tolerance(tolerance), inc(1, 3), dec(-3, -1) {}
+Report::Report(int tolerance) : row(std::vector<int>()), tolerance(tolerance), unsafeIndexes(std::vector<int>()), inc(1, 3), dec(-3, -1) {}
 
-Report::~Report()
+Report::~Report() {}
+
+void Report::pushBack(int n)
 {
-    delete row;
+    row.push_back(n);
 }
 
-bool Report::isSafe() const
+bool Report::isSafe()
 {
     bool result = true;
     const Range *range = &dec;
@@ -19,11 +21,12 @@ bool Report::isSafe() const
         range = &inc;
     }
 
-    int margin = tolerance;
+    size_t margin = tolerance;
 
-    for (int i = 1; i < row->size(); i++)
+    for (size_t i = 1; i < row.size(); i++)
     {
-        int diff = row->at(i) - row->at(i - 1);
+        int diff = row.at(i) - row.at(i - 1);
+
         if (!range->contains(diff))
         {
             if (margin == 0)
@@ -32,29 +35,51 @@ bool Report::isSafe() const
                 break;
             }
             margin--;
-            std::cout << this->toString(row) << " removing index " << i << " number " << row->at(i) << std::endl;
-            row->erase(row->begin() + i);
-            i--; // Adjust the index to account for the removed element
+            int unsafe_index = -1;
+
+            // remove i if there is no i+1 or i-1 is connected to i+1
+            if (i + 1 == row.size() || range->contains(row.at(i + 1) - row.at(i - 1)))
+            {
+                unsafe_index = i;
+            }
+
+            // remove i-1 if there's no i-2 or i-2 is conneted to i
+            else if (i < 2 || range->contains(row.at(i) - row.at(i - 2)))
+            {
+                unsafe_index = i - 1;
+            }
+
+            else
+            {
+                std::cout << this->toString() << " is not safe by removing " << i << " or " << i - 1 << std::endl;
+                result = false;
+                break;
+            }
+
+            // remove one
+            unsafeIndexes.push_back(unsafe_index);
+            std::cout << this->toString() << " at index " << i << " add unsafe index " << unsafe_index << " number " << row.at(unsafe_index) << std::endl;
+
+            // skip next index, already processed
+            if (unsafe_index == i)
+            {
+                i++;
+            }
         }
     }
 
-    std::cout << this->toString(row) << " safe? " << result << std::endl;
+    std::cout << this->toString() << " safe? " << result << std::endl;
 
     return result;
 }
 
 std::string Report::toString() const
 {
-    return this->toString(row);
-}
-
-std::string Report::toString(std::vector<int> *row) const
-{
     std::ostringstream oss;
-    for (int i = 0; i < row->size(); i++)
+    for (int i = 0; i < row.size(); i++)
     {
-        oss << row->at(i);
-        if (i < row->size() - 1)
+        oss << row.at(i);
+        if (i < row.size() - 1)
         {
             oss << " ";
         }
@@ -65,10 +90,11 @@ std::string Report::toString(std::vector<int> *row) const
 bool Report::isIncreasing() const
 {
     int increasing = 0;
-    for (int i = 1; i < row->size(); i++)
+    for (size_t i = 1; i < row.size(); i++)
     {
-        if (this->row->at(0) < this->row->at(1))
+        if (this->row.at(i - 1) < this->row.at(i))
         {
+
             increasing++;
         }
         if (increasing > tolerance)

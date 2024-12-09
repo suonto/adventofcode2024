@@ -13,5 +13,6 @@ int main()
 {
     std::cout << "01 main solving input" << std::endl;
     // solve(input);
+    // 523 too high
     return solve(input, 1);
 }

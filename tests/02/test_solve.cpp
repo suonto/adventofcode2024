@@ -2,6 +2,7 @@
 #include "02/report.h"
 #include "02/range.h"
 #include "02/solve.h"
+#include <algorithm>
 
 const char *example = R"(7 6 4 2 1
 1 2 7 8 9
@@ -10,34 +11,97 @@ const char *example = R"(7 6 4 2 1
 8 6 4 4 1
 1 3 6 7 9)";
 
-TEST(Report, 0ToString)
+TEST(Day02, 0ToString)
 {
-    std::vector<int> row0 = {7, 6, 4, 2, 1};
-    Report report0(&row0);
-    EXPECT_EQ("7 6 4 2 1 ", report0.toString());
+    Report report0(1);
+    int values[] = {7, 6, 4, 2, 1};
+    for (int value : values)
+    {
+        report0.pushBack(value);
+    }
+    EXPECT_EQ("7 6 4 2 1", report0.toString());
 }
 
-TEST(Report, 0IsSafe)
+TEST(Day02, 0IsSafe)
 {
-    std::vector<int> row0 = {7, 6, 4, 2, 1};
-    Report report0(&row0);
+
+    Report report0(1);
+    int values[] = {7, 6, 4, 2, 1};
+    for (int value : values)
+    {
+        report0.pushBack(value);
+    }
     EXPECT_TRUE(report0.isSafe());
 }
 
-TEST(Report, 1IsSafe)
+TEST(Day02, 1IsSafe)
 {
-    std::vector<int> row = {1, 2, 7, 8, 9};
-    Report report(&row);
-    EXPECT_FALSE(report.isSafe());
+    Report report1(1);
+    int values[] = {1, 2, 7, 8, 9};
+    for (int value : values)
+    {
+        report1.pushBack(value);
+    }
+    EXPECT_FALSE(report1.isSafe());
 }
 
-TEST(Example2, SolveA)
+TEST(Day02, RemoveILast)
+{
+    Report reportX(1);
+    // at 2 (last) unsafe last 69 removes i 69
+    int values[] = {81, 78, 76, 69};
+    for (int value : values)
+    {
+        reportX.pushBack(value);
+    }
+    EXPECT_TRUE(reportX.isSafe());
+}
+
+TEST(Day02, RemoveINotLast)
+{
+    Report reportX(1);
+    // at 2 (not last) unsafe 69 before valid 73 removes i 69
+    int values[] = {78, 76, 69, 73};
+    for (int value : values)
+    {
+        reportX.pushBack(value);
+    }
+    EXPECT_TRUE(reportX.isSafe());
+}
+
+TEST(Day02, RemovePrevFirst)
+{
+    Report reportX(1);
+    // at 1 unsafe prev 85 at 0 (first) removes prev 85 at 0
+    int values[] = {85, 78, 76, 74};
+    for (int value : values)
+    {
+        std::cout << "push " << value << std::endl;
+        reportX.pushBack(value);
+        std::cout << "pushed " << value << std::endl;
+    }
+    EXPECT_TRUE(reportX.isSafe());
+}
+
+TEST(Day02, RemovePrevNotFirst)
+{
+    Report reportX(1);
+    // unsafe prev 85 at 1 (not first) removes prev 85 at 1
+    int values[] = {81, 85, 78, 76};
+    for (int value : values)
+    {
+        reportX.pushBack(value);
+    }
+    EXPECT_TRUE(reportX.isSafe());
+}
+
+TEST(Day02, ExampleA)
 {
     auto result = solve(example);
     EXPECT_EQ(result, 2);
 }
 
-TEST(Example2, SolveB)
+TEST(Day02, ExampleB)
 {
     auto result = solve(example, 1);
     EXPECT_EQ(result, 4);

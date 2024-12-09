@@ -19,13 +19,12 @@ int solve(const char *example, int tolerance)
     while (std::getline(stream, line))
     {
         std::istringstream lineStream(line);
-        std::vector<int> *row = new std::vector<int>();
+        Report *report = new Report(tolerance);
         int value;
         while (lineStream >> value)
         {
-            row->push_back(value);
+            report->pushBack(value);
         }
-        Report *report = new Report(row, tolerance);
         reports.push_back(report);
     }
 

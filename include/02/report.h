@@ -8,19 +8,19 @@
 class Report
 {
 public:
-    Report(std::vector<int> *, int = 0);
+    Report(int = 0);
     ~Report();
-    bool isSafe() const;
+    void pushBack(int);
+    bool isSafe();
     std::string toString() const;
 
 private:
-    std::vector<int> *row;
-    std::vector<int> *safeRow;
+    std::vector<int> row;
+    std::vector<int> unsafeIndexes;
     int tolerance;
     Range inc;
     Range dec;
     bool isIncreasing() const;
-    std::string toString(std::vector<int> *) const;
 };
 
 #endif // REPORT_H
