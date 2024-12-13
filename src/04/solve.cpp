@@ -10,6 +10,70 @@
 #include <map>
 #include <optional>
 
+size_t tryAtB(Grid<Letter> &grid, const GridPos &currentPos)
+{
+    // Create a map of direction, word
+    std::map<Direction, bool> result;
+
+    auto current = grid.at(currentPos);
+
+    if (!current.has_value() || current.value().c != 'A')
+    {
+        return 0;
+    }
+
+    std::vector<Direction> ordinals = {Direction::Northeast, Direction::Southeast, Direction::Southwest, Direction::Northwest};
+
+    // Insert initial char for each direction
+    for (auto d : ordinals)
+    {
+        result[d] = false;
+    }
+
+    for (auto it = result.cbegin(); it != result.cend();)
+    {
+        auto dir = it->first;
+        GridPos cursor = currentPos;
+
+        auto prev = grid.getVal(currentPos, dir, -1).value_or('#');
+        auto next = grid.getVal(currentPos, dir, 1).value_or('#');
+
+        if (prev.c == 'M' && next.c == 'S')
+        {
+            it++;
+        }
+        else
+        {
+            it = result.erase(it);
+        }
+    }
+
+    if ((result.find(Direction::Northeast) != result.end() || result.find(Direction::Southwest) != result.end()) && (result.find(Direction::Southeast) != result.end() || result.find(Direction::Northwest) != result.end()))
+    {
+        Letter &letterRef = grid.getValRef(currentPos);
+        letterRef.enabled = true;
+        std::cout << "enabled " << currentPos.toString() << '\n';
+
+        for (auto ord : ordinals)
+        {
+            auto enable_pos = grid.getPos(currentPos, ord);
+            if (!enable_pos.has_value())
+            {
+                std::logic_error("Enable out of bounds");
+            }
+            Letter &letterRef = grid.getValRef(enable_pos.value());
+            letterRef.enabled = true;
+            std::cout << "enabled " << enable_pos.value().toString() << '\n';
+        }
+
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 size_t tryAt(Grid<Letter> &grid, const GridPos &currentPos, const std::string &word)
 {
     // Create a map of direction, word
@@ -122,7 +186,15 @@ size_t solve(const char *example, bool variant_b)
         {
             GridPos current(y, x);
             // not very optimized lolz
-            size_t cell_result = tryAt(grid, current, "XMAS") + tryAt(grid, current, "SAMX");
+            size_t cell_result;
+            if (variant_b)
+            {
+                cell_result = tryAtB(grid, current);
+            }
+            else
+            {
+                cell_result = tryAt(grid, current, "XMAS") + tryAt(grid, current, "SAMX");
+            }
             std::cout << current.toString() << " cell result " << cell_result << '\n';
             if (cell_result != 0)
             {
