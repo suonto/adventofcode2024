@@ -75,8 +75,8 @@ size_t tryAt(Grid<Letter> &grid, const GridPos &currentPos, const std::string &w
                 {
                     std::logic_error("Enable out of bounds");
                 }
-                Letter *letterRef = grid.getValRef(enable_pos.value());
-                (*letterRef).enabled = true;
+                Letter &letterRef = grid.getValRef(enable_pos.value());
+                letterRef.enabled = true;
                 std::cout << "enabled " << enable_pos.value().toString() << '\n';
             }
         }

@@ -135,13 +135,13 @@ std::optional<T> Grid<T>::getVal(const GridPos &pos, const Direction &direction,
 }
 
 template <typename T>
-T *Grid<T>::getValRef(const GridPos &pos)
+T &Grid<T>::getValRef(const GridPos &pos)
 {
     if (!contains(pos))
     {
         throw std::out_of_range("getValRef");
     }
-    return &_grid[pos.y][pos.x];
+    return _grid[pos.y][pos.x];
 }
 
 template <typename T>

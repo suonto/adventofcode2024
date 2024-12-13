@@ -31,7 +31,7 @@ public:
     /**
      * @return the val ref at current pos.
      */
-    T *getValRef(const GridPos &currentPos);
+    T &getValRef(const GridPos &currentPos);
 
     /**
      * @param pos is a value (copy) of current pos.
