@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <optional>
+#include <string>
 
 /**
  * @brief 2D grid of T.
@@ -20,17 +21,41 @@ public:
     Grid();
     void addRow(std::vector<T>);
     std::optional<T> at(const GridPos &pos) const;
+    void set(const GridPos &pos, T value);
 
-    std::optional<T> nextVal(const GridPos &currentPos, const Direction &) const;
+    /**
+     * @return the val (if any) n steps in direction d from current pos.
+     */
+    std::optional<T> getVal(const GridPos &currentPos, const Direction &d, int steps = 1) const;
+
+    /**
+     * @return the val ref at current pos.
+     */
+    T *getValRef(const GridPos &currentPos);
 
     /**
      * @param pos is a value (copy) of current pos.
-     * Modifies that to return next pos in the given direction.
+     * Modifies that to return pos some steps in the given direction.
      */
-    std::optional<GridPos> nextPos(GridPos pos, const Direction &) const;
+    std::optional<GridPos> getPos(GridPos pos, const Direction &, int steps = 1) const;
+
+    /**
+     * @param mutable reference to pos instance which will be moved (altered).
+     * @param direction to move towards.
+     * @param steps how much. Can be negative.
+     */
+    bool move(GridPos &pos, const Direction &d, int steps = 1) const;
+
+    size_t ySize() const;
+    size_t xSize(int y = 0) const;
+    std::string toString() const;
 
 private:
     std::vector<std::vector<T>> _grid;
+
+    bool contains(const GridPos &pos) const;
 };
+
+#include <grid.tpp>
 
 #endif // GRID_H

@@ -35,7 +35,7 @@ enum class Direction
  * @param direction The direction to convert to a string.
  * @return const string The string representation of the direction.
  */
-std::string toString(Direction);
+std::string toString(const Direction &d);
 
 Direction next(Direction);
 CardinalDirection next(CardinalDirection);

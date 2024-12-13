@@ -12,7 +12,7 @@ include_directories(include)
 add_library(lib_01 STATIC src/01/solve.cpp)
 add_library(lib_02 STATIC src/02/solve.cpp src/02/report.cpp src/02/range.cpp)
 add_library(lib_03 STATIC src/03/solve.cpp src/03/instruction.cpp)
-add_library(lib_04 STATIC src/04/solve.cpp src/04/grid.cpp src/directions.cpp)
+add_library(lib_04 STATIC src/04/solve.cpp src/04/letter.cpp src/directions.cpp src/pos.cpp)
 
 # Add the main executable
 add_executable(main_01 src/01/main.cpp)

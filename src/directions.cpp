@@ -1,6 +1,6 @@
 #include "directions.h"
 
-std::string toString(Direction direction)
+std::string toString(const Direction &direction)
 {
     switch (direction)
     {
@@ -41,7 +41,7 @@ CardinalDirection operator++(CardinalDirection &direction)
     return direction;
 }
 
-CardinalDirection operator++(CardinalDirection &direction)
+CardinalDirection operator--(CardinalDirection &direction)
 {
     direction = static_cast<CardinalDirection>((static_cast<int>(direction) - 1) % 4);
     return direction;

@@ -12,7 +12,7 @@ struct GridPos
     int y; // grows down
     int x; // grows right
 
-    GridPos(int, int);
+    GridPos(int y, int x);
 
     bool operator==(const GridPos &other) const;
     bool operator!=(const GridPos &other) const;
