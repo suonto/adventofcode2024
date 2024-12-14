@@ -8,13 +8,42 @@
 #include <unordered_set>
 #include <optional>
 
-std::optional<size_t> processUpdate(const std::vector<size_t> &update)
+std::optional<size_t> processUpdate(const std::vector<size_t> &update, const std::unordered_map<size_t, std::vector<size_t>> &rules)
 {
     std::unordered_set<size_t> processed;
-    for (const auto &page : update)
+    std::unordered_set<size_t> remaining(update.begin(), update.end());
+
+    size_t middle_val;
+
+    for (size_t i = 0; i < update.size(); ++i)
     {
-        if (!)
+        const auto &page = update[i];
+
+        // resolve middle_val
+        if (i == (update.size()) / 2)
+        {
+            middle_val = page;
+        }
+
+        auto it = rules.find(page);
+        if (it != rules.end())
+        {
+            // it first is key, second is value
+            for (const auto &required : it->second)
+            {
+                if (!processed.contains(required) && remaining.contains(required))
+                {
+                    std::cout << "page " << page << " rule " << it->first << " requires " << required << '\n';
+                    return std::nullopt;
+                }
+            }
+        }
+
+        processed.insert(page);
+        remaining.erase(page);
     }
+
+    return middle_val;
 }
 
 size_t solve(const std::string &input, bool variant_b)
@@ -72,18 +101,33 @@ size_t solve(const std::string &input, bool variant_b)
         std::cout << "\n";
     }
 
+    size_t result = 0;
+
     std::cout << "\nProcessing updates:\n";
     for (const auto &update : updates)
     {
+        auto update_result = processUpdate(update, rules);
+
         std::cout << "Update: ";
         for (const auto &u : update)
         {
             std::cout << u << " ";
         }
+
+        if (update_result.has_value())
+        {
+            std::cout << "result: " << update_result.value();
+            result += update_result.value();
+        }
+        else
+        {
+            std::cout << " invalid";
+        }
+
         std::cout << "\n";
     }
 
-    size_t result = 0;
+    std::cout << "\nResult: " << result << std::endl;
 
     return result;
 }
