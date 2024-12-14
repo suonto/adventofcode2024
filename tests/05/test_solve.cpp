@@ -42,6 +42,12 @@ TEST(Day05, SolveA)
     EXPECT_EQ(result, 143);
 }
 
+TEST(Day05, SolveB)
+{
+    auto result = solveB(example);
+    EXPECT_EQ(result, 123);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

@@ -37,7 +37,7 @@ const std::string input = R"(
 
 int main()
 {
-    std::cout << "04 main solving input" << std::endl;
-    auto result = solveA(input);
+    std::cout << "05 main solving input" << std::endl;
+    auto result = solveB(input);
     return result;
 }

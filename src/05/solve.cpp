@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
+#include <algorithm>
 
 std::optional<size_t> processUpdate(const std::vector<size_t> &update, const std::unordered_map<size_t, std::vector<size_t>> &rules)
 {
@@ -44,6 +45,69 @@ std::optional<size_t> processUpdate(const std::vector<size_t> &update, const std
     }
 
     return middle_val;
+}
+
+size_t orderUpdate(std::vector<size_t> update, const std::unordered_map<size_t, std::vector<size_t>> &rules)
+{
+    bool zero_swaps = true;
+
+    for (size_t i = 0; i < update.size(); ++i)
+    {
+        auto it = rules.find(update[i]);
+
+        // while there is a rule for current update[i]
+        while (it != rules.end())
+        {
+            auto rule = it->first;
+            auto required_values = it->second;
+
+            std::cout << "at " << i << " (" << update[i] << ") rule " << rule << " with requirements ";
+            for (const auto &required : it->second)
+            {
+                std::cout << required << " ";
+            }
+            std::cout << '\n';
+
+            bool swapped = false;
+
+            // it first is key, second is value
+            for (const auto &required : it->second)
+            {
+
+                for (size_t j = i + 1; j < update.size(); j++)
+                {
+                    if (update[j] == required)
+                    {
+                        std::cout << "Update " << i << " (" << update[i] << ") requires " << j << " (" << required << ")" << ". Swapping pages." << std::endl;
+                        std::swap(update[i], update[j]);
+                        std::cout << "Update i after swap " << update[i] << std::endl;
+                        swapped = true;
+                        zero_swaps = false;
+                        break;
+                    }
+                }
+
+                if (swapped)
+                {
+                    it = rules.find(update[i]);
+                    break;
+                }
+            }
+            if (!swapped)
+            {
+                break;
+            }
+        }
+    }
+
+    std::cout << "Sorted update: ";
+    for (const auto &u : update)
+    {
+        std::cout << u << " ";
+    }
+    std::cout << '\n';
+
+    return zero_swaps ? 0 : update[update.size() / 2];
 }
 
 size_t solve(const std::string &input, bool variant_b)
@@ -106,22 +170,36 @@ size_t solve(const std::string &input, bool variant_b)
     std::cout << "\nProcessing updates:\n";
     for (const auto &update : updates)
     {
-        auto update_result = processUpdate(update, rules);
-
-        std::cout << "Update: ";
-        for (const auto &u : update)
+        if (variant_b)
         {
-            std::cout << u << " ";
-        }
-
-        if (update_result.has_value())
-        {
-            std::cout << "result: " << update_result.value();
-            result += update_result.value();
+            std::cout << "\nUpdate: ";
+            for (const auto &u : update)
+            {
+                std::cout << u << " ";
+            }
+            std::cout << '\n';
+            auto update_result = orderUpdate(update, rules);
+            std::cout << "Update result: " << update_result;
+            result += update_result;
         }
         else
         {
-            std::cout << " invalid";
+            auto update_result = processUpdate(update, rules);
+            std::cout << "Update: ";
+            for (const auto &u : update)
+            {
+                std::cout << u << " ";
+            }
+
+            if (update_result.has_value())
+            {
+                std::cout << "result: " << update_result.value();
+                result += update_result.value();
+            }
+            else
+            {
+                std::cout << " invalid";
+            }
         }
 
         std::cout << "\n";
