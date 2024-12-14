@@ -1,12 +1,14 @@
+#include <03/instruction.h>
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <sstream>
-#include <03/instruction.h>
 
-size_t solve(const char *example, bool variant_b)
+size_t solve(const std::string &example, bool variant_b)
 {
-    std::istringstream stream(example);
+    std::istringstream stream;
+    stream.str(example);
     std::string line;
     size_t result = 0;
 
@@ -27,12 +29,12 @@ size_t solve(const char *example, bool variant_b)
     return result;
 }
 
-size_t solveA(const char *example)
+size_t solveA(const std::string &example)
 {
     return solve(example, false);
 }
 
-size_t solveB(const char *example)
+size_t solveB(const std::string &example)
 {
     return solve(example, true);
 }

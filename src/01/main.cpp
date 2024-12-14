@@ -1,8 +1,10 @@
-#include <iostream>
 #include "01/main.h"
 #include "01/solve.h"
 
-const char *input = R"(
+#include <iostream>
+#include <string>
+
+const std::string input = R"(
 3   4
 4   3
 2   5

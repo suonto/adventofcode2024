@@ -1,8 +1,11 @@
-#include <iostream>
 #include "04/solve.h"
+
 #include <gtest/gtest.h>
 
-const char *exampleA = R"(
+#include <string>
+#include <iostream>
+
+const std::string example = R"(
 MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
@@ -15,13 +18,9 @@ MAMMMXMMMM
 MXMXAXMASX
 )";
 
-const char *exampleB = R"(
-xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
-)";
-
-TEST(Day03, SolveA)
+TEST(Day04, SolveA)
 {
-    auto result = solveA(exampleA);
+    auto result = solveA(example);
     EXPECT_EQ(result, 18);
 }
 

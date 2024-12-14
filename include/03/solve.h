@@ -1,8 +1,10 @@
 #ifndef SOLVE_H
 #define SOLVE_H
-#include <cstdlib>
 
-size_t solveA(const char *);
-size_t solveB(const char *);
+#include <cstdlib>
+#include <string>
+
+size_t solveA(const std::string &s);
+size_t solveB(const std::string &s);
 
 #endif // SOLVE_H

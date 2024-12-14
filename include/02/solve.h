@@ -1,8 +1,10 @@
 #ifndef SOLVE_H
 #define SOLVE_H
 
-int solve(const char *, int = 0);
-int solveA(const char *);
-int solveB(const char *);
+#include <string>
+
+int solve(const std::string &s, int = 0);
+int solveA(const std::string &s);
+int solveB(const std::string &s);
 
 #endif // SOLVE_H

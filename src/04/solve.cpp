@@ -2,6 +2,7 @@
 #include "pos.h"
 #include "directions.h"
 #include "04/letter.h"
+#include "04/solve.h"
 
 #include <iostream>
 #include <vector>
@@ -152,7 +153,7 @@ size_t tryAt(Grid<Letter> &grid, const GridPos &currentPos, const std::string &w
     }
 }
 
-size_t solve(const char *example, bool variant_b)
+size_t solve(const std::string &example, bool variant_b)
 {
     std::istringstream stream(example);
     std::string line;
@@ -211,12 +212,12 @@ size_t solve(const char *example, bool variant_b)
     return result;
 }
 
-size_t solveA(const char *example)
+size_t solveA(const std::string &example)
 {
     return solve(example, false);
 }
 
-size_t solveB(const char *example)
+size_t solveB(const std::string &example)
 {
     return solve(example, true);
 }

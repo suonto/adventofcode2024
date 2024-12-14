@@ -1,10 +1,13 @@
-#include <gtest/gtest.h>
 #include "02/report.h"
 #include "02/range.h"
 #include "02/solve.h"
-#include <algorithm>
 
-const char *example = R"(7 6 4 2 1
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <string>
+
+const std::string example = R"(7 6 4 2 1
 1 2 7 8 9
 9 7 6 2 1
 1 3 2 4 5

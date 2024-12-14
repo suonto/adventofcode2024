@@ -1,8 +1,10 @@
-#include <iostream>
 #include "01/solve.h"
 #include <gtest/gtest.h>
 
-const char *example = R"(
+#include <iostream>
+#include <string>
+
+const std::string example = R"(
 3   4
 4   3
 2   5

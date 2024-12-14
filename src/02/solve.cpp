@@ -1,13 +1,14 @@
+#include "02/solve.h"
+#include "02/report.h"
+
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include "02/solve.h"
-#include "02/report.h"
 
-int solve(const char *example, int tolerance)
+int solve(const std::string &example, int tolerance)
 {
     std::istringstream stream(example);
     std::string line;

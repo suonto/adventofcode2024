@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cmath>
 
-int solve1(const char *example)
+int solve1(const std::string &example)
 {
     std::istringstream stream(example);
     std::string line;
@@ -42,7 +42,7 @@ int solve1(const char *example)
     return result;
 }
 
-int solve2(const char *example)
+int solve2(const std::string &example)
 {
     std::istringstream stream(example);
     std::string line;
