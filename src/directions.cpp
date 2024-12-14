@@ -1,4 +1,5 @@
 #include "directions.h"
+#include <stdexcept>
 
 std::string toString(const Direction &direction)
 {
@@ -20,6 +21,8 @@ std::string toString(const Direction &direction)
         return "West";
     case Direction::Northwest:
         return "Northwest";
+    default:
+        throw std::invalid_argument("Invalid direction argument");
     }
 }
 
