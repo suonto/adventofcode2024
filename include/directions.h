@@ -30,14 +30,27 @@ enum class Direction
 };
 
 /**
- * @brief Get the string representation of a direction.
- *
- * @param direction The direction to convert to a string.
- * @return const string The string representation of the direction.
+ * @brief Enumeration representing only the primary ordinal directions.
  */
-std::string toString(const Direction &d);
+enum class OrdinalDirection
+{
+    Northeast,
+    Southeast,
+    Southwest,
+    Northwest
+};
 
-Direction next(Direction);
-CardinalDirection next(CardinalDirection);
+Direction next(Direction direction);
+Direction prev(Direction direction);
+
+CardinalDirection next(CardinalDirection direction);
+CardinalDirection prev(CardinalDirection direction);
+
+OrdinalDirection next(OrdinalDirection direction);
+OrdinalDirection prev(OrdinalDirection direction);
+
+std::string toString(const Direction &direction);
+std::string toString(const CardinalDirection &direction);
+std::string toString(const OrdinalDirection &direction);
 
 #endif // DIRECTIONS_H

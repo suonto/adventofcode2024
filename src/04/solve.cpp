@@ -18,7 +18,7 @@ size_t tryAtB(Grid<Letter> &grid, const GridPos &currentPos)
 
     auto current = grid.at(currentPos);
 
-    if (!current.has_value() || current.value().c != 'A')
+    if (current.c != 'A')
     {
         return 0;
     }
@@ -82,16 +82,16 @@ size_t tryAt(Grid<Letter> &grid, const GridPos &currentPos, const std::string &w
 
     auto current = grid.at(currentPos);
 
-    if (!current.has_value() || current.value().c != word[0])
+    if (current.c != word[0])
     {
         return 0;
     }
 
     // Insert initial char for each direction
-    result[Direction::Northeast] = current.value().c;
-    result[Direction::East] = current.value().c;
-    result[Direction::Southeast] = current.value().c;
-    result[Direction::South] = current.value().c;
+    result[Direction::Northeast] = current.c;
+    result[Direction::East] = current.c;
+    result[Direction::Southeast] = current.c;
+    result[Direction::South] = current.c;
 
     for (auto it = result.cbegin(); it != result.cend();)
     {
@@ -108,7 +108,7 @@ size_t tryAt(Grid<Letter> &grid, const GridPos &currentPos, const std::string &w
                 break;
             }
 
-            auto next = grid.at(cursor).value_or('#');
+            auto next = grid.at(cursor);
             std::cout << currentPos.toString() << " " << toString(dir) << " " << i << " " << cursor.toString() << " next: " << next.c << '\n';
             if (next.c == word[i])
             {

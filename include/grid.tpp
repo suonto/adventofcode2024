@@ -16,13 +16,25 @@ void Grid<T>::addRow(std::vector<T> row)
 }
 
 template <typename T>
-std::optional<T> Grid<T>::at(const GridPos &pos) const
+std::optional<T> Grid<T>::at(const std::optional<GridPos> &pos) const
 {
-    if (contains(pos))
+
+    if (!pos.has_value() || !contains(pos.value()))
     {
-        return _grid[pos.y][pos.x];
+        return std::nullopt;
     }
-    return std::nullopt;
+
+    return _grid[pos.value().y][pos.value().x];
+}
+
+template <typename T>
+T Grid<T>::at(const GridPos &pos) const
+{
+    if (!contains(pos))
+    {
+        throw std::out_of_range("at() grid pos out of range");
+    }
+    return _grid[pos.y][pos.x];
 }
 
 template <typename T>
@@ -36,48 +48,87 @@ void Grid<T>::set(const GridPos &pos, T value)
     _grid[pos.y][pos.x] = value;
 }
 
+template <typename DirectionType>
+GridPos movePos(GridPos pos, const DirectionType &direction, int steps)
+{
+    if constexpr (std::is_same_v<DirectionType, Direction>)
+    {
+        switch (direction)
+        {
+        case Direction::North:
+            pos.y -= steps;
+            break;
+        case Direction::Northeast:
+            pos.x += steps;
+            pos.y -= steps;
+            break;
+        case Direction::East:
+            pos.x += steps;
+            break;
+        case Direction::Southeast:
+            pos.x += steps;
+            pos.y += steps;
+            break;
+        case Direction::South:
+            pos.y += steps;
+            break;
+        case Direction::Southwest:
+            pos.x -= steps;
+            pos.y += steps;
+            break;
+        case Direction::West:
+            pos.x -= steps;
+            break;
+        case Direction::Northwest:
+            pos.x -= steps;
+            pos.y -= steps;
+            break;
+        default:
+            break;
+        }
+    }
+    else if constexpr (std::is_same_v<DirectionType, CardinalDirection>)
+    {
+        switch (direction)
+        {
+        case CardinalDirection::North:
+            pos.y -= steps;
+            break;
+        case CardinalDirection::East:
+            pos.x += steps;
+            break;
+        case CardinalDirection::South:
+            pos.y += steps;
+            break;
+        case CardinalDirection::West:
+            pos.x -= steps;
+            break;
+        default:
+            break;
+        }
+    }
+    return pos;
+}
+
 template <typename T>
 std::optional<GridPos> Grid<T>::getPos(GridPos pos, const Direction &direction, int steps) const
 {
-    switch (direction)
-    {
-    case Direction::North:
-        pos.y -= steps;
-        break;
-    case Direction::Northeast:
-        pos.x += steps;
-        pos.y -= steps;
-        break;
-    case Direction::East:
-        pos.x += steps;
-        break;
-    case Direction::Southeast:
-        pos.x += steps;
-        pos.y += steps;
-        break;
-    case Direction::South:
-        pos.y += steps;
-        break;
-    case Direction::Southwest:
-        pos.x -= steps;
-        pos.y += steps;
-        break;
-    case Direction::West:
-        pos.x -= steps;
-        break;
-    case Direction::Northwest:
-        pos.x -= steps;
-        pos.y -= steps;
-        break;
-    default:
-        return std::nullopt;
-    }
-
+    pos = movePos(pos, direction, steps);
     if (contains(pos))
     {
         return pos;
     }
+    return std::nullopt;
+}
 
+template <typename T>
+std::optional<GridPos> Grid<T>::getPos(GridPos pos, const CardinalDirection &direction, int steps) const
+{
+    pos = movePos(pos, direction, steps);
+    if (contains(pos))
+    {
+        return pos;
+    }
     return std::nullopt;
 }
 
@@ -121,17 +172,29 @@ bool Grid<T>::move(GridPos &pos, const Direction &d, int steps) const
     return contains(pos);
 }
 
-template <typename T>
-std::optional<T> Grid<T>::getVal(const GridPos &pos, const Direction &direction, int steps) const
+template <typename T, typename DirectionType>
+std::optional<T> getValHelper(const Grid<T> &grid, const GridPos &pos, const DirectionType &direction, int steps)
 {
-    auto next_pos = getPos(pos, direction, steps);
+    auto next_pos = grid.getPos(pos, direction, steps);
 
     if (next_pos.has_value())
     {
-        return at(next_pos.value());
+        return grid.at(next_pos.value());
     }
 
     return std::nullopt;
+}
+
+template <typename T>
+std::optional<T> Grid<T>::getVal(const GridPos &pos, const Direction &direction, int steps) const
+{
+    return getValHelper(*this, pos, direction, steps);
+}
+
+template <typename T>
+std::optional<T> Grid<T>::getVal(const GridPos &pos, const CardinalDirection &direction, int steps) const
+{
+    return getValHelper(*this, pos, direction, steps);
 }
 
 template <typename T>

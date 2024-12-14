@@ -20,13 +20,23 @@ class Grid
 public:
     Grid();
     void addRow(std::vector<T>);
-    std::optional<T> at(const GridPos &pos) const;
+
+    /**
+     * For pos maybe in the grid.
+     */
+    std::optional<T> at(const std::optional<GridPos> &pos) const;
+
+    /**
+     * For pos definitely in the grid.
+     */
+    T at(const GridPos &pos) const;
     void set(const GridPos &pos, T value);
 
     /**
      * @return the val (if any) n steps in direction d from current pos.
      */
     std::optional<T> getVal(const GridPos &currentPos, const Direction &d, int steps = 1) const;
+    std::optional<T> getVal(const GridPos &currentPos, const CardinalDirection &d, int steps = 1) const;
 
     /**
      * @return the val ref at current pos.
@@ -38,6 +48,7 @@ public:
      * Modifies that to return pos some steps in the given direction.
      */
     std::optional<GridPos> getPos(GridPos pos, const Direction &, int steps = 1) const;
+    std::optional<GridPos> getPos(GridPos pos, const CardinalDirection &, int steps = 1) const;
 
     /**
      * @param mutable reference to pos instance which will be moved (altered).
