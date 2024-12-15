@@ -20,6 +20,6 @@ const std::string input = R"(
 int main()
 {
     std::cout << "06_main solving input" << std::endl;
-    auto result = solveA(input);
+    auto result = solveB(input);
     return result;
 }

@@ -49,7 +49,7 @@ void Grid<T>::set(const GridPos &pos, T value)
 }
 
 template <typename DirectionType>
-GridPos movePos(GridPos pos, const DirectionType &direction, int steps)
+void moveHelper(GridPos &pos, const DirectionType &direction, int steps)
 {
     if constexpr (std::is_same_v<DirectionType, Direction>)
     {
@@ -84,7 +84,7 @@ GridPos movePos(GridPos pos, const DirectionType &direction, int steps)
             pos.y -= steps;
             break;
         default:
-            break;
+            throw std::invalid_argument("Invalid argument to moveHelper");
         }
     }
     else if constexpr (std::is_same_v<DirectionType, CardinalDirection>)
@@ -107,13 +107,12 @@ GridPos movePos(GridPos pos, const DirectionType &direction, int steps)
             break;
         }
     }
-    return pos;
 }
 
 template <typename T>
 std::optional<GridPos> Grid<T>::getPos(GridPos pos, const Direction &direction, int steps) const
 {
-    pos = movePos(pos, direction, steps);
+    moveHelper(pos, direction, steps);
     if (contains(pos))
     {
         return pos;
@@ -124,7 +123,7 @@ std::optional<GridPos> Grid<T>::getPos(GridPos pos, const Direction &direction, 
 template <typename T>
 std::optional<GridPos> Grid<T>::getPos(GridPos pos, const CardinalDirection &direction, int steps) const
 {
-    pos = movePos(pos, direction, steps);
+    moveHelper(pos, direction, steps);
     if (contains(pos))
     {
         return pos;
@@ -135,40 +134,14 @@ std::optional<GridPos> Grid<T>::getPos(GridPos pos, const CardinalDirection &dir
 template <typename T>
 bool Grid<T>::move(GridPos &pos, const Direction &d, int steps) const
 {
-    switch (d)
-    {
-    case Direction::North:
-        pos.y -= steps;
-        break;
-    case Direction::Northeast:
-        pos.y -= steps;
-        pos.x += steps;
-        break;
-    case Direction::East:
-        pos.x += steps;
-        break;
-    case Direction::Southeast:
-        pos.y += steps;
-        pos.x += steps;
-        break;
-    case Direction::South:
-        pos.y += steps;
-        break;
-    case Direction::Southwest:
-        pos.y += steps;
-        pos.x -= steps;
-        break;
-    case Direction::West:
-        pos.x -= steps;
-        break;
-    case Direction::Northwest:
-        pos.y -= steps;
-        pos.x -= steps;
-        break;
-    default:
-        throw std::out_of_range("Invalid direction");
-    }
+    moveHelper(pos, d, steps);
+    return contains(pos);
+}
 
+template <typename T>
+bool Grid<T>::move(GridPos &pos, const CardinalDirection &d, int steps) const
+{
+    moveHelper(pos, d, steps);
     return contains(pos);
 }
 

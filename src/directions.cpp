@@ -126,7 +126,7 @@ OrdinalDirection prev(OrdinalDirection direction)
 }
 
 // Define the toString function for Direction
-std::string toString(const Direction &direction)
+std::string toString(Direction direction)
 {
     switch (direction)
     {
@@ -152,7 +152,7 @@ std::string toString(const Direction &direction)
 }
 
 // Define the toString function for CardinalDirection
-std::string toString(const CardinalDirection &direction)
+std::string toString(CardinalDirection direction)
 {
     switch (direction)
     {
@@ -170,7 +170,7 @@ std::string toString(const CardinalDirection &direction)
 }
 
 // Define the toString function for OrdinalDirection
-std::string toString(const OrdinalDirection &direction)
+std::string toString(OrdinalDirection direction)
 {
     switch (direction)
     {

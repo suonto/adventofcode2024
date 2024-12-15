@@ -49,8 +49,8 @@ CardinalDirection prev(CardinalDirection direction);
 OrdinalDirection next(OrdinalDirection direction);
 OrdinalDirection prev(OrdinalDirection direction);
 
-std::string toString(const Direction &direction);
-std::string toString(const CardinalDirection &direction);
-std::string toString(const OrdinalDirection &direction);
+std::string toString(Direction direction);
+std::string toString(CardinalDirection direction);
+std::string toString(OrdinalDirection direction);
 
 #endif // DIRECTIONS_H

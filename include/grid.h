@@ -56,6 +56,7 @@ public:
      * @param steps how much. Can be negative.
      */
     bool move(GridPos &pos, const Direction &d, int steps = 1) const;
+    bool move(GridPos &pos, const CardinalDirection &d, int steps = 1) const;
 
     size_t ySize() const;
     size_t xSize(int y = 0) const;
