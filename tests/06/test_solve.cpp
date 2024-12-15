@@ -18,10 +18,16 @@ const std::string example = R"(
 ......#...
 )";
 
-TEST(Day06_, SolveA)
+TEST(Day06, SolveA)
 {
     auto result = solveA(example);
     EXPECT_EQ(result, 41);
+}
+
+TEST(Day06, SolveB)
+{
+    auto result = solveB(example);
+    EXPECT_EQ(result, 6);
 }
 
 int main(int argc, char **argv)
