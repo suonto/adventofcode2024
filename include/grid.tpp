@@ -132,6 +132,28 @@ std::optional<GridPos> Grid<T>::getPos(GridPos pos, const CardinalDirection &dir
 }
 
 template <typename T>
+GridPos Grid<T>::requirePos(GridPos pos, const Direction &direction, int steps) const
+{
+    moveHelper(pos, direction, steps);
+    if (!contains(pos))
+    {
+        throw std::out_of_range("requirePos " + pos.toString() + " " + std::to_string(steps) + " -> " + ::toString(direction));
+    }
+    return pos;
+}
+
+template <typename T>
+GridPos Grid<T>::requirePos(GridPos pos, const CardinalDirection &direction, int steps) const
+{
+    moveHelper(pos, direction, steps);
+    if (!contains(pos))
+    {
+        throw std::out_of_range("requirePos " + pos.toString() + " " + std::to_string(steps) + " -> " + ::toString(direction));
+    }
+    return pos;
+}
+
+template <typename T>
 bool Grid<T>::move(GridPos &pos, const Direction &d, int steps) const
 {
     moveHelper(pos, d, steps);

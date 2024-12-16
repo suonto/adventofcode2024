@@ -11,6 +11,11 @@
 #include <optional>
 #include <unordered_set>
 
+std::string toString(const Step &step)
+{
+    return step.pos.toString() + " " + toString(step.dir_in) + " -> " + toString(step.dir_out);
+}
+
 /**
  * find path steps at pos or nullopt.
  */
@@ -79,10 +84,11 @@ Intention getIntention(Grid<char> &grid, const GridPos &pos, const CardinalDirec
 
     auto next_val = grid.at(maybe_next_pos.value());
 
-    if (next_val == '#')
+    if (next_val == '#' || next_val == 'O')
     {
         return Intention::Turn;
     }
+
     return Intention::Advance;
 }
 
@@ -95,79 +101,91 @@ Intention getIntention(Grid<char> &grid, const GridPos &pos, const CardinalDirec
  *  - keep tracking the imaginary guard path.
  *  - a loop is formed if at any point pos and heading match a step in path
  */
-size_t dreamWalk(Grid<char> &grid, Path path, GridPos pos, CardinalDirection heading)
+size_t dreamWalk(Grid<char> &grid, Path path, GridPos pos, CardinalDirection heading, bool verbose)
 {
+    // std::cout << "dream walking at " << pos.toString() << " towards " << toString(heading) << '\n';
     while (true)
     {
         Intention intent = getIntention(grid, pos, heading);
 
-        auto dir_in = path.steps.size() ? path.steps[path.steps.size() - 1].dir_out : CardinalDirection::North;
+        auto dir_in = path.steps.size() > 0 ? path.steps[path.steps.size() - 1].dir_out : CardinalDirection::North;
 
         // Exit if void is due
         if (intent == Intention::Exit)
         {
+            // std::cout << "dreaming of exit at " << pos.toString() << " towards " << toString(heading) << '\n';
             return 0;
         }
 
         if (intent == Intention::Turn)
         {
             heading = next(heading);
+            // std::cout << "dreaming of an intention to turn right at " << pos.toString() << " towards " << toString(heading) << '\n';
             continue;
         }
 
         auto new_step = Step(pos, dir_in, heading);
+        // std::cout << "dreaming of a new step " << toString(new_step) << '\n';
 
-        if (containsStep(path, new_step))
+        bool is_loop = containsStep(path, new_step);
+        path.addStep(new_step);
+
+        if (is_loop)
         {
+
             auto loop_pos = grid.getPos(pos, dir_in);
             if (!loop_pos)
             {
                 throw std::logic_error("No loop pos");
             }
             auto o_pos = loop_pos.value();
-            std::cout << "loop at step " << new_step.pos.toString() << " " << toString(new_step.dir_in) << " " << o_pos.toString() << '\n';
-            for (size_t y = 0; y < grid.ySize(); y++)
-            {
-                for (size_t x = 0; x < grid.xSize(y); x++)
-                {
-                    GridPos p(y, x);
-                    auto cell = grid.at(p);
-                    auto path_steps = findSteps(path, p);
-                    if (o_pos == p)
-                    {
-                        std::cout << 'O';
-                    }
-                    else if (path_steps.has_value())
-                    {
-                        auto p_steps = path_steps.value();
+            std::cout << "loop at step " << new_step.pos.toString() << " " << toString(new_step.dir_in) << " -> " << toString(new_step.dir_out) << " " << o_pos.toString() << '\n';
 
-                        if (cell == '^')
+            if (verbose)
+            {
+                for (size_t y = 0; y < grid.ySize(); y++)
+                {
+                    for (size_t x = 0; x < grid.xSize(y); x++)
+                    {
+                        GridPos p(y, x);
+                        auto cell = grid.at(p);
+                        auto path_steps = findSteps(path, p);
+                        if (path_steps.has_value())
                         {
-                            std::cout << '^';
-                        }
-                        else if (p_steps.size() > 1 || p_steps[0].dir_in != p_steps[0].dir_out)
-                        {
-                            std::cout << '+';
-                        }
-                        else if (p_steps[0].dir_in == CardinalDirection::North || p_steps[0].dir_in == CardinalDirection::South)
-                        {
-                            std::cout << '|';
+                            auto p_steps = path_steps.value();
+
+                            if (cell == '^')
+                            {
+                                std::cout << '^';
+                            }
+                            else if (p_steps.size() > 1 || p_steps[0].dir_in != p_steps[0].dir_out)
+                            {
+                                std::cout << '+';
+                            }
+                            else if (p_steps[0].dir_in == CardinalDirection::North || p_steps[0].dir_in == CardinalDirection::South)
+                            {
+                                std::cout << '|';
+                            }
+                            else
+                            {
+                                std::cout << '-';
+                            }
                         }
                         else
                         {
-                            std::cout << '-';
+                            std::cout << cell;
                         }
                     }
-                    else
-                    {
-                        std::cout << cell;
-                    }
+                    std::cout << '\n';
                 }
-                std::cout << '\n';
+                // for (const auto s : path.steps)
+                // {
+                //     std::cout << s.pos.toString() << " " << toString(s.dir_in) << " -> " << toString(s.dir_out) << '\n';
+                // }
             }
+
             return 1;
         }
-        path.addStep(new_step);
 
         auto pos_maybe = grid.getPos(pos, heading);
         if (!pos_maybe.has_value())
@@ -234,7 +252,22 @@ size_t walk(Grid<char> &grid, const GridPos &start, bool variant_b)
         // before incrementing position, dream a turn and dream walk
         if (variant_b)
         {
-            result += dreamWalk(grid, path, pos, next(heading));
+            // Truly replace front val with #, then check and restore it
+            auto o_pos = grid.requirePos(pos, heading);
+
+            /**
+             * No placement on start but also no placement if the guard already traversed the cell.
+             */
+            if (o_pos != start && !path.positions.contains(o_pos))
+            {
+                char &ref = grid.getValRef(o_pos);
+                char orig = ref;
+                ref = 'O';
+                // std::cout << "before at " << o_pos.toString() << " " << grid.at(o_pos) << '\n';
+                result += dreamWalk(grid, path, pos, next(heading), false);
+                ref = orig;
+                // std::cout << "after at " << o_pos.toString() << " " << grid.at(o_pos) << '\n';
+            }
         }
 
         // Actually moving

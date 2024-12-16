@@ -49,6 +49,8 @@ public:
      */
     std::optional<GridPos> getPos(GridPos pos, const Direction &, int steps = 1) const;
     std::optional<GridPos> getPos(GridPos pos, const CardinalDirection &, int steps = 1) const;
+    GridPos requirePos(GridPos pos, const Direction &, int steps = 1) const;
+    GridPos requirePos(GridPos pos, const CardinalDirection &, int steps = 1) const;
 
     /**
      * @param mutable reference to pos instance which will be moved (altered).
