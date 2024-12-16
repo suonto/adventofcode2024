@@ -3,6 +3,6 @@
 
 #include "solve.h"
 
-int main();
+int main(int argc, char *argv[]);
 
 #endif // AOC_2024_01_H

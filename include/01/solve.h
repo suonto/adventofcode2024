@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-int solve1(const std::string &s);
-int solve2(const std::string &s);
+int solveA(const std::string &s);
+int solveB(const std::string &s);
 
 #endif // SOLVE_H

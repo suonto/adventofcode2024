@@ -49,3 +49,13 @@ int solve(const std::string &example, int tolerance)
 
     return safe_reports;
 }
+
+int solveA(const std::string &example)
+{
+    return solve(example, 0);
+}
+
+int solveB(const std::string &example)
+{
+    return solve(example, 1);
+}

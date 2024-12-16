@@ -15,13 +15,13 @@ const std::string example = R"(
 
 TEST(Day01, SolveA)
 {
-    auto result = solve1(example);
+    auto result = solveA(example);
     EXPECT_EQ(result, 11);
 }
 
 TEST(Day01, SolveB)
 {
-    auto result = solve2(example);
+    auto result = solveB(example);
     EXPECT_EQ(result, 31);
 }
 

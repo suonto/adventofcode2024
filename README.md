@@ -1,7 +1,8 @@
 # adventofcode2024
 ## Run
 ```
-./main_01.sh
+./main.sh 01 A
+./main.sh 05 B
 ```
 
 ## Test

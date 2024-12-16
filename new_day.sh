@@ -35,22 +35,10 @@ copy_if_not_exists() {
     fi
 }
 
-copy_f_if_not_exists() {
-    src=$1
-    dest=$2
-    if [ ! -d "$dest" ]; then
-        cp $src $dest
-        echo "Copied $src to $dest"
-    else
-        echo "File $dest already exists, skipping copy."
-    fi
-}
-
 # Copy directories recursively if they do not exist
 copy_if_not_exists "src/$arg1/" "src/$arg2"
 copy_if_not_exists "include/$arg1/" "include/$arg2"
 copy_if_not_exists "tests/$arg1/" "tests/$arg2"
-copy_f_if_not_exists "main_${arg1}.sh" "main_${arg2}.sh"
 
 # Perform sed replacements
 find "src/$arg2" -type f -exec sed -i "s/${arg1}\//${arg2}\//g" {} +
@@ -60,8 +48,5 @@ find "include/$arg2" -type f -exec sed -i "s/${arg1}_/${arg2}_/g" {} +
 find "tests/$arg2" -type f -exec sed -i "s/${arg1}\//${arg2}\//g" {} +
 find "tests/$arg2" -type f -exec sed -i "s/${arg1}_/${arg2}_/g" {} +
 find "tests/$arg2" -type f -exec sed -i "s/Day${arg1}/Day${arg2}/g" {} +
-
-sed -i "s/${arg1}/${arg2}/g" main_${arg1}.sh
-
 
 echo "Reminder: Don't forget to edit CMakeLists.txt to include the new directories."

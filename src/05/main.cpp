@@ -4,7 +4,7 @@
 #include "05/main.h"
 #include "05/solve.h"
 
-const std::string input = R"(
+const std::string example = R"(
 47|53
 97|13
 97|61
@@ -35,9 +35,37 @@ const std::string input = R"(
 97,13,75,29,47
 )";
 
-int main()
+void print_usage()
 {
-    std::cout << "05 main solving input" << std::endl;
-    auto result = solveB(input);
-    return result;
+    std::cerr << "Usage: <program> <variant>" << std::endl;
+    std::cerr << "Variant must be A or B." << std::endl;
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        print_usage();
+        return 1;
+    }
+
+    std::string variant = argv[1];
+
+    std::cout << argv[0] << " solving input" << std::endl;
+    size_t result;
+    if (variant == "A")
+    {
+        result = solveA(example);
+    }
+    else if (variant == "B")
+    {
+        result = solveB(example);
+    }
+    else
+    {
+        throw std::invalid_argument("Invalid variant");
+    }
+
+    std::cout << "Result: " << result << std::endl;
+    return 0;
 }
