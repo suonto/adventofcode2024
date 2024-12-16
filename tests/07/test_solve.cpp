@@ -1,4 +1,5 @@
 #include "07/solve.h"
+#include "07/equation.h"
 
 #include <gtest/gtest.h>
 
@@ -16,6 +17,24 @@ const std::string example = R"(
 21037: 9 7 18 13
 292: 11 6 16 20
 )";
+
+TEST(Day07, Eq0)
+{
+    auto result = Equation(190, {10, 19}).validate();
+    EXPECT_EQ(result, 1);
+}
+
+TEST(Day07, Eq1)
+{
+    auto result = Equation(3267, {81, 40, 27}).validate();
+    EXPECT_EQ(result, 2);
+}
+
+TEST(Day07, Eq2)
+{
+    auto result = Equation(292, {11, 6, 16, 20}).validate();
+    EXPECT_EQ(result, 1);
+}
 
 TEST(Day07, SolveA)
 {

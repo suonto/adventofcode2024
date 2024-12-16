@@ -15,7 +15,7 @@ add_library(lib_03 STATIC src/03/solve.cpp src/03/instruction.cpp)
 add_library(lib_04 STATIC src/04/solve.cpp src/04/letter.cpp src/directions.cpp src/pos.cpp)
 add_library(lib_05 STATIC src/05/solve.cpp)
 add_library(lib_06 STATIC src/06/solve.cpp src/directions.cpp src/pos.cpp)
-add_library(lib_07 STATIC src/07/solve.cpp)
+add_library(lib_07 STATIC src/07/solve.cpp src/07/equation.cpp)
 
 # Add the main executable
 add_executable(main_01 src/01/main.cpp)
