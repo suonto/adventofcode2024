@@ -78,6 +78,24 @@ TEST(Day07B, Eq4sub1)
     EXPECT_EQ(result, true);
 }
 
+TEST(Day07B, Eq4sub2)
+{
+    auto result = Equation(480, {6, 8}).validate_b();
+    EXPECT_EQ(result, false);
+}
+
+TEST(Day07B, Eq4sub3)
+{
+    auto result = Equation(472, {6}).validate_b();
+    EXPECT_EQ(result, false);
+}
+
+TEST(Day07B, Eq4sub4)
+{
+    auto result = Equation(60, {6}).validate_b();
+    EXPECT_EQ(result, false);
+}
+
 TEST(Day07B, Eq5)
 {
     auto result = Equation(192, {17, 8, 14}).validate_b();
@@ -86,9 +104,44 @@ TEST(Day07B, Eq5)
 
 TEST(Day07B, Eq6)
 {
-    auto result = Equation(109137611815, {9, 4, 9, 1, 9, 5, 13, 97, 18, 1, 4}).validate_b();
+    auto result = Equation(225, {1, 5, 1, 5}).validate_b();
     EXPECT_EQ(result, true);
 }
+
+TEST(Day07B, Eq7)
+{
+    auto result = Equation(31, {1, 5, 1, 6}).validate_b();
+    EXPECT_EQ(result, true);
+}
+
+TEST(Day07B, Eq8)
+{
+    // 212 + 2 * 2 = 428
+    auto result = Equation(428, {2, 12, 2, 2}).validate_b();
+    EXPECT_EQ(result, true);
+}
+
+TEST(Day07B, Eq9)
+{
+    // 212 + 2 * 2 = 428
+    auto result = Equation(428, {2, 12, 2, 2}).validate_b();
+    EXPECT_EQ(result, true);
+}
+
+TEST(Day07B, Eq10)
+{
+    // 3 * 735 * 2 = 4410
+    auto result = Equation(4410, {3, 7, 3, 5, 2}).validate_b();
+    EXPECT_EQ(result, true);
+}
+
+TEST(Day07B, Eq11)
+{
+    // 3 * 735 * 2 = 4410
+    auto result = Equation(4410, {3, 7, 35, 2}).validate_b();
+    EXPECT_EQ(result, true);
+}
+
 
 TEST(Day07B, Solve)
 {
