@@ -14,6 +14,7 @@ public:
      * @returns the number of valid combinations.
      */
     size_t validate() const;
+    size_t validate_b() const;
 
     std::string toString() const;
 
