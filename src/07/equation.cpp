@@ -94,7 +94,7 @@ bool Equation::validate_b() const
     }
 
     // left side concat +
-    if (nums.size() == 1 && (result - last) / multiplier(last) == nums[0])
+    if (nums.size() == 1 && (result - last) % multiplier(last) == 0 && (result - last) / multiplier(last) == nums[0])
     {
         return true;
     }
@@ -104,7 +104,7 @@ bool Equation::validate_b() const
     }
 
     // left side concat *
-    if (nums.size() == 1 && (result / (last * multiplier(last))) == nums[0])
+    if (nums.size() == 1 && (result % (last * multiplier(last))) == 0 && (result / (last * multiplier(last))) == nums[0])
     {
         return true;
     }
