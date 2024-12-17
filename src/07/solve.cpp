@@ -41,7 +41,7 @@ size_t solve(const std::string &example, bool variant_b)
     // print the parsed equations
     for (const auto &eq : equations)
     {
-        auto res = eq.validate();
+        auto res = variant_b ? eq.validate_b() : eq.validate();
         if (res > 0)
         {
             result += eq.result;

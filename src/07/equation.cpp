@@ -3,6 +3,12 @@
 #include <sstream>
 #include <iostream>
 #include <optional>
+#include <cmath>
+
+size_t multiplier(size_t n)
+{
+    return std::pow(10, std::to_string(n).size());
+}
 
 Equation::Equation(size_t result, const std::vector<size_t> &numbers)
     : result(result), numbers(numbers) {}
@@ -96,10 +102,10 @@ size_t Equation::validate_b() const
         size_t second_last = nums2[nums2.size() - 1];
         nums2.pop_back();
 
-        size_t concat = std::stoi(std::to_string(second_last) + std::to_string(last));
-
+        size_t concat = std::stoul(std::to_string(second_last) + std::to_string(last));
         nums2.push_back(concat);
 
+        // right side concat +
         if (result % concat == 0 && nums2.size() == 1 && result / concat == nums2[0])
         {
             valid += 1;
@@ -109,6 +115,7 @@ size_t Equation::validate_b() const
             valid += Equation(result / concat, nums2).validate_b();
         }
 
+        //  right side concat *
         if (result == concat && nums2.size() == 0)
         {
             valid += 1;
@@ -116,6 +123,26 @@ size_t Equation::validate_b() const
         else if (result >= concat && nums2.size() > 0)
         {
             valid += Equation(result - concat, nums2).validate_b();
+        }
+
+        // left side concat +
+        if (nums2.size() == 1 && (result - last) / multiplier(last) == second_last)
+        {
+            valid += 1;
+        }
+        if ((result - last) % multiplier(last) == 0 && nums2.size() > 1)
+        {
+            valid += Equation((result - last) / multiplier(last), nums2).validate_b();
+        }
+
+        // left side concat *
+        if (nums2.size() == 1 && (result / (last * multiplier(last))) == second_last)
+        {
+            valid += 1;
+        }
+        if (nums2.size() > 1 && (result % (last * multiplier(last))) == 0)
+        {
+            valid += Equation((result / (last * multiplier(last))), nums2).validate_b();
         }
     }
 

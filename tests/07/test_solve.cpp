@@ -84,10 +84,16 @@ TEST(Day07B, Eq5)
     EXPECT_EQ(result, 1);
 }
 
+TEST(Day07B, Eq6)
+{
+    auto result = Equation(109137611815, {9, 4, 9, 1, 9, 5, 13, 97, 18, 1, 4}).validate_b();
+    EXPECT_EQ(result, 1);
+}
+
 TEST(Day07B, Solve)
 {
     auto result = solveB(example);
-    EXPECT_EQ(result, 6);
+    EXPECT_EQ(result, 11387);
 }
 
 int main(int argc, char **argv)
