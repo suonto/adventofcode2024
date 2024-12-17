@@ -41,12 +41,12 @@ size_t solve(const std::string &example, bool variant_b)
     // print the parsed equations
     for (const auto &eq : equations)
     {
-        auto res = variant_b ? eq.validate_b() : eq.validate();
-        if (res > 0)
+        bool res = variant_b ? eq.validate_b() : eq.validate();
+        if (res)
         {
             result += eq.result;
         }
-        std::cout << eq.toString() << " += " << res << " = " << result << '\n';
+        std::cout << eq.toString() << " += " << eq.result << " = " << result << '\n';
     }
 
     std::cout << "Result " << result << std::endl;

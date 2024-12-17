@@ -24,10 +24,8 @@ std::string Equation::toString() const
     return oss.str();
 }
 
-size_t Equation::validate() const
+bool Equation::validate() const
 {
-
-    size_t valid = 0;
 
     // nums is a mutable copy
     std::vector<size_t> nums = numbers;
@@ -41,30 +39,33 @@ size_t Equation::validate() const
 
     if (result % last == 0 && nums.size() == 1 && result / last == nums[0])
     {
-        valid += 1;
+        return true;
     }
     else if (result % last == 0 && nums.size() > 0)
     {
-        valid += Equation(result / last, nums).validate();
+        if (Equation(result / last, nums).validate())
+        {
+            return true;
+        };
     }
 
     if (result == last && nums.size() == 0)
     {
-        valid += 1;
+        return true;
     }
     else if (result >= last && nums.size() > 0)
     {
-        valid += Equation(result - last, nums).validate();
+        if (Equation(result - last, nums).validate())
+        {
+            return true;
+        };
     }
 
-    return valid;
+    return false;
 }
 
-size_t Equation::validate_b() const
+bool Equation::validate_b() const
 {
-
-    size_t valid = 0;
-
     // nums is a mutable copy
     // 3: 1 + 2
     // 6: 1 + 2 + 3
@@ -73,26 +74,43 @@ size_t Equation::validate_b() const
     nums.pop_back();
 
     std::cout << this->toString() << '\n';
-    // std::cout << "reminder: " << result % last << '\n';
-    // std::cout << "division: " << result / last << '\n';
-    // std::cout << "difference: " << result - last << '\n';
 
     if (result % last == 0 && nums.size() == 1 && result / last == nums[0])
     {
-        valid += 1;
+        return true;
     }
-    else if (result % last == 0 && nums.size() > 0)
+    else if (result % last == 0 && nums.size() > 0 && Equation(result / last, nums).validate_b())
     {
-        valid += Equation(result / last, nums).validate_b();
+        return true;
     }
 
     if (result == last && nums.size() == 0)
     {
-        valid += 1;
+        return true;
     }
-    else if (result >= last && nums.size() > 0)
+    else if (result >= last && nums.size() > 0 && Equation(result - last, nums).validate_b())
     {
-        valid += Equation(result - last, nums).validate_b();
+        return true;
+    }
+
+    // left side concat +
+    if (nums.size() == 1 && (result - last) / multiplier(last) == nums[0])
+    {
+        return true;
+    }
+    if (nums.size() > 1 && (result - last) % multiplier(last) == 0 && Equation((result - last) / multiplier(last), nums).validate_b())
+    {
+        return true;
+    }
+
+    // left side concat *
+    if (nums.size() == 1 && (result / (last * multiplier(last))) == nums[0])
+    {
+        return true;
+    }
+    if (nums.size() > 1 && (result % (last * multiplier(last))) == 0 && Equation((result / (last * multiplier(last))), nums).validate_b())
+    {
+        return true;
     }
 
     // Concat and do the same
@@ -108,43 +126,23 @@ size_t Equation::validate_b() const
         // right side concat +
         if (result % concat == 0 && nums2.size() == 1 && result / concat == nums2[0])
         {
-            valid += 1;
+            return true;
         }
-        else if (result % concat == 0 && nums2.size() > 0)
+        else if (result % concat == 0 && nums2.size() > 0 && Equation(result / concat, nums2).validate_b())
         {
-            valid += Equation(result / concat, nums2).validate_b();
+            return true;
         }
 
         //  right side concat *
         if (result == concat && nums2.size() == 0)
         {
-            valid += 1;
+            return true;
         }
-        else if (result >= concat && nums2.size() > 0)
+        else if (result >= concat && nums2.size() > 0 && Equation(result - concat, nums2).validate_b())
         {
-            valid += Equation(result - concat, nums2).validate_b();
-        }
-
-        // left side concat +
-        if (nums2.size() == 1 && (result - last) / multiplier(last) == second_last)
-        {
-            valid += 1;
-        }
-        if ((result - last) % multiplier(last) == 0 && nums2.size() > 1)
-        {
-            valid += Equation((result - last) / multiplier(last), nums2).validate_b();
-        }
-
-        // left side concat *
-        if (nums2.size() == 1 && (result / (last * multiplier(last))) == second_last)
-        {
-            valid += 1;
-        }
-        if (nums2.size() > 1 && (result % (last * multiplier(last))) == 0)
-        {
-            valid += Equation((result / (last * multiplier(last))), nums2).validate_b();
+            return true;
         }
     }
 
-    return valid;
+    return false;
 }

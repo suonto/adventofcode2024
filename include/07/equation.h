@@ -11,10 +11,10 @@ public:
 
     /**
      * Validates with possible operators.
-     * @returns the number of valid combinations.
+     * @returns bool valid.
      */
-    size_t validate() const;
-    size_t validate_b() const;
+    bool validate() const;
+    bool validate_b() const;
 
     std::string toString() const;
 
