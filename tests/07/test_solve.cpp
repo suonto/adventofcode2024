@@ -104,14 +104,14 @@ TEST(Day07B, Eq5)
 
 TEST(Day07B, Eq6)
 {
-    auto result = Equation(225, {1, 5, 1, 5}).validate_b();
-    EXPECT_EQ(result, true);
+    auto result = Equation(225, {15, 1, 5}).validate_b();
+    EXPECT_EQ(result, false);
 }
 
 TEST(Day07B, Eq7)
 {
     auto result = Equation(31, {1, 5, 1, 6}).validate_b();
-    EXPECT_EQ(result, true);
+    EXPECT_EQ(result, false);
 }
 
 TEST(Day07B, Eq8)
@@ -128,20 +128,33 @@ TEST(Day07B, Eq9)
     EXPECT_EQ(result, true);
 }
 
-TEST(Day07B, Eq10)
+TEST(Day07B, Eq10a)
 {
-    // 3 * 735 * 2 = 4410
+    // 3 * 7 || 3 || 5 * 2 != 4410
     auto result = Equation(4410, {3, 7, 3, 5, 2}).validate_b();
+    EXPECT_EQ(result, false);
+}
+
+TEST(Day07B, Eq10b)
+{
+    // 3 * 7 || 3 || 5 * 2 = 4270
+    auto result = Equation(4270, {3, 7, 3, 5, 2}).validate_b();
     EXPECT_EQ(result, true);
 }
 
 TEST(Day07B, Eq11)
 {
-    // 3 * 735 * 2 = 4410
+    // 3 * 7 || 35 * 2 != 4410
     auto result = Equation(4410, {3, 7, 35, 2}).validate_b();
-    EXPECT_EQ(result, true);
+    EXPECT_EQ(result, false);
 }
 
+TEST(Day07B, Eq11b)
+{
+    // 3 * 7 || 35 + 2 != 2137
+    auto result = Equation(2137, {3, 7, 35, 2}).validate_b();
+    EXPECT_EQ(result, true);
+}
 
 TEST(Day07B, Solve)
 {
