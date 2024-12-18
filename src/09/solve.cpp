@@ -51,7 +51,7 @@ size_t solve(const std::string &example, bool variant_b)
     size_t first = 0;
     size_t last = disk.size()-1;
 
-    while (first != last) {
+    while (true) {
         while (!disk[last].has_value()) {
             last--;
         }
@@ -60,10 +60,12 @@ size_t solve(const std::string &example, bool variant_b)
             first++;
         }
 
+        if (first >= last) {
+            break;
+        }
+
         disk[first] = disk[last];
-        first++;
         disk[last] = std::nullopt;
-        last--;
     }
 
     for (size_t i = 0; i < disk.size(); i++)

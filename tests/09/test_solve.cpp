@@ -15,11 +15,11 @@ TEST(Day09A, Solve)
     EXPECT_EQ(result, 1928);
 }
 
-// TEST(Day09B, Solve)
-// {
-//     auto result = solveB(example);
-//     EXPECT_EQ(result, 11387);
-// }
+TEST(Day09B, Solve)
+{
+    auto result = solveB(example);
+    EXPECT_EQ(result, 2858);
+}
 
 int main(int argc, char **argv)
 {
