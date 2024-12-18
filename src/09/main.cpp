@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     size_t result;
     if (variant == "A")
     {
-        result = solveA(example2);
+        result = solveA(example);
     }
     else if (variant == "B")
     {

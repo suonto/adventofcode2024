@@ -46,6 +46,39 @@ size_t solve(const std::string &example, bool variant_b)
         }
     }
 
+    std::cout << '\n';
+
+    size_t first = 0;
+    size_t last = disk.size()-1;
+
+    while (first != last) {
+        while (!disk[last].has_value()) {
+            last--;
+        }
+
+        while (disk[first].has_value()) {
+            first++;
+        }
+
+        disk[first] = disk[last];
+        first++;
+        disk[last] = std::nullopt;
+        last--;
+    }
+
+    for (size_t i = 0; i < disk.size(); i++)
+    {
+        if (!disk[i].has_value())
+        {
+            std::cout << '.';
+        }
+        else
+        {
+            result += disk[i].value() * i;
+            std::cout << std::to_string(disk[i].value());
+        }
+    }
+
     std::cout << std::endl;
 
     return result;
