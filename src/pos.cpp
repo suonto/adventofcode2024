@@ -1,7 +1,7 @@
 #include "pos.h"
 #include "vector.h"
 
-GridPos::GridPos(int y, int x) : y(y), x(x) {}
+GridPos::GridPos(size_t y, size_t x) : y(y), x(x) {}
 
 bool GridPos::operator==(const GridPos &other) const
 {

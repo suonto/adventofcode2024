@@ -12,10 +12,10 @@ struct Vector;
  */
 struct GridPos
 {
-    int y; // grows down
-    int x; // grows right
+    size_t y; // grows down
+    size_t x; // grows right
 
-    GridPos(int y, int x);
+    GridPos(size_t y, size_t x);
 
     bool operator==(const GridPos &other) const;
     bool operator!=(const GridPos &other) const;

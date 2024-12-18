@@ -20,6 +20,7 @@ class Grid
 public:
     Grid();
     void addRow(std::vector<T>);
+    bool contains(const GridPos &pos) const;
 
     /**
      * For pos maybe in the grid.
@@ -66,8 +67,6 @@ public:
 
 private:
     std::vector<std::vector<T>> _grid;
-
-    bool contains(const GridPos &pos) const;
 };
 
 #include <grid.tpp>

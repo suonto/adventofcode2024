@@ -2,3 +2,4 @@
 
 Antenna::Antenna(const GridPos &pos, const char frequency)
     : pos(pos), frequency(frequency) {}
+

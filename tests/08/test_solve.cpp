@@ -19,7 +19,7 @@ const std::string example = R"(
 ............
 )";
 
-TEST(Day08, SolveA)
+TEST(Day08A, Solve)
 {
     auto result = solveA(example);
     EXPECT_EQ(result, 14);
