@@ -57,17 +57,38 @@ size_t solve(const std::string &example, bool variant_b)
             {
                 Antenna other = antennas[j];
                 Vector vec(current.pos, other.pos);
-                if (grid.contains(current.pos - vec))
+
+                if (variant_b)
                 {
-                    auto pos1 = current.pos - vec;
-                    // std::cout << "antinode " << freq << " at " << (pos1).toString() + '\n';
-                    antinodes.insert(pos1);
+                    GridPos backwards = current.pos;
+                    GridPos forwards = other.pos;
+                    antinodes.insert(forwards);
+                    while (grid.contains(backwards))
+                    {
+                        antinodes.insert(backwards);
+                        backwards = backwards - vec;
+                    }
+
+                    while (grid.contains(forwards))
+                    {
+                        antinodes.insert(forwards);
+                        forwards = forwards + vec;
+                    }
                 }
-                if (grid.contains(other.pos + vec))
+                else
                 {
-                    auto pos2 = other.pos + vec;
-                    // std::cout << "antinode " << freq << " at " << (pos2).toString() + '\n';
-                    antinodes.insert(pos2);
+                    if (grid.contains(current.pos - vec))
+                    {
+                        auto pos1 = current.pos - vec;
+                        // std::cout << "antinode " << freq << " at " << (pos1).toString() + '\n';
+                        antinodes.insert(pos1);
+                    }
+                    if (grid.contains(other.pos + vec))
+                    {
+                        auto pos2 = other.pos + vec;
+                        // std::cout << "antinode " << freq << " at " << (pos2).toString() + '\n';
+                        antinodes.insert(pos2);
+                    }
                 }
             }
         }
