@@ -1,6 +1,9 @@
 #ifndef POSITIONS_H
 #define POSITIONS_H
 
+// forward declaration
+struct Vector;
+
 #include <iostream>
 #include <string>
 
@@ -16,6 +19,8 @@ struct GridPos
 
     bool operator==(const GridPos &other) const;
     bool operator!=(const GridPos &other) const;
+    GridPos operator+(const Vector &v) const;
+    GridPos operator-(const Vector &v) const;
 
     /**
      * @return "(y,x)"
