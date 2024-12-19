@@ -14,6 +14,7 @@ struct Tile
 {
     size_t elevation;
     std::unordered_set<GridPos> reachable_tips;
+    size_t paths;
     GridPos pos;
 
     Tile() = delete;

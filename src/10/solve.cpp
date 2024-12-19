@@ -29,6 +29,7 @@ std::vector<Tile> descNeighbors(Grid<Tile> &grid, const Tile &tile, const Tile &
 
         if (neighbor.elevation == tile.elevation - 1)
         {
+            neighbor.paths += 1;
             neighbor.reachable_tips.insert(tip.pos);
             std::cout << "Tip " << tip.pos.toString() << " is reachable from " << neighbor.pos.toString() << ": " << neighbor.reachable_tips.size() << '\n';
             neighbors.push_back(neighbor);
@@ -97,7 +98,14 @@ size_t solve(const std::string &example, bool variant_b)
     {
         const auto trailhead = grid.at(trailhead_pos);
         std::cout << "trailhead at " << trailhead.pos.toString() << ": " << trailhead.reachable_tips.size() << '\n';
-        result += trailhead.reachable_tips.size();
+        if (!variant_b)
+        {
+            result += trailhead.reachable_tips.size();
+        }
+        else
+        {
+            result += trailhead.paths;
+        }
     }
 
     return result;
