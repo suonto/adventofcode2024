@@ -18,6 +18,7 @@ add_library(lib_06 STATIC src/06/solve.cpp src/directions.cpp src/pos.cpp)
 add_library(lib_07 STATIC src/07/solve.cpp src/07/equation.cpp)
 add_library(lib_08 STATIC src/08/solve.cpp src/08/antenna.cpp src/vector.cpp src/pos.cpp)
 add_library(lib_09 STATIC src/09/solve.cpp)
+add_library(lib_10 STATIC src/10/solve.cpp src/10/tile.cpp src/pos.cpp)
 
 # Add the main executable
 add_executable(main_01 src/01/main.cpp)
@@ -29,6 +30,7 @@ add_executable(main_06 src/06/main.cpp)
 add_executable(main_07 src/07/main.cpp)
 add_executable(main_08 src/08/main.cpp)
 add_executable(main_09 src/09/main.cpp)
+add_executable(main_10 src/10/main.cpp)
 
 # link mains to lib
 target_link_libraries(main_01 lib_01)
@@ -40,6 +42,7 @@ target_link_libraries(main_06 lib_06)
 target_link_libraries(main_07 lib_07)
 target_link_libraries(main_08 lib_08)
 target_link_libraries(main_09 lib_09)
+target_link_libraries(main_10 lib_10)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -62,6 +65,7 @@ add_executable(test_06 tests/06/test_solve.cpp)
 add_executable(test_07 tests/07/test_solve.cpp)
 add_executable(test_08 tests/08/test_solve.cpp)
 add_executable(test_09 tests/09/test_solve.cpp)
+add_executable(test_10 tests/10/test_solve.cpp)
 
 # Link test executables
 target_link_libraries(test_01 GTest::gtest_main lib_01)
@@ -73,6 +77,7 @@ target_link_libraries(test_06 GTest::gtest_main lib_06)
 target_link_libraries(test_07 GTest::gtest_main lib_07)
 target_link_libraries(test_08 GTest::gtest_main lib_08)
 target_link_libraries(test_09 GTest::gtest_main lib_09)
+target_link_libraries(test_10 GTest::gtest_main lib_10)
 
 include(GoogleTest)
 gtest_discover_tests(test_01)
@@ -84,3 +89,4 @@ gtest_discover_tests(test_06)
 gtest_discover_tests(test_07)
 gtest_discover_tests(test_08)
 gtest_discover_tests(test_09)
+gtest_discover_tests(test_10)
