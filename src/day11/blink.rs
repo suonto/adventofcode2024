@@ -1,24 +1,28 @@
-pub fn blink(data: &mut Vec<u32>) {
-    for i in 0..data.len() {
-        let x = data[i];
-        if x == 0 {
-            data[i] = 1;
+pub fn blink(data: &Vec<u64>) -> Vec<u64> {
+    let mut vec: Vec<u64> = Vec::new();
+    for x in data.iter() {
+        if *x == 0 {
+            vec.push(1);
+            continue;
         }
 
-        let digits = x.to_string();
-        let digits_count = digits.len();
-        // 9999
+        let digits: String = x.to_string();
+        let digits_count: usize = digits.len();
+
         if digits_count % 2 == 0 {
-            let front = &digits[0..(digits_count/2)];
-            let back = &digits[(digits_count/2)..digits_count];
+            let front = &digits[0..(digits_count / 2)];
+            let back = &digits[(digits_count / 2)..digits_count];
 
-            // Convert front and back to u32 using unwrap
-            let front: u32 = front.parse().unwrap();
-            let back: u32 = back.parse().unwrap();
+            // Convert front and back to u64 using unwrap
+            let front: u64 = front.parse().unwrap();
+            let back: u64 = back.parse().unwrap();
 
-            data[i] = front;
-            data.insert(i+1, back);
+            vec.push(front);
+            vec.push(back);
+            continue;
         }
 
+        vec.push(*x * 2024);
     }
+    return vec;
 }
