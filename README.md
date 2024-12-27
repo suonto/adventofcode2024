@@ -22,5 +22,5 @@ Project is a cargo package, containing multiple binary crates in src/bin.
 
 ### Build & Run
 ```
-cargo run --bin day11A
+cargo run --bin day11a
 ```
