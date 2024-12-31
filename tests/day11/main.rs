@@ -1,5 +1,4 @@
-#[cfg(test)]
-mod tests {
+mod test_day11 {
     use aoc2024::day11::blink;
 
     #[test]

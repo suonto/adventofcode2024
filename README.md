@@ -24,3 +24,8 @@ Project is a cargo package, containing multiple binary crates in src/bin.
 ```
 cargo run --bin day11a
 ```
+
+### Run tests
+```
+RUST_BACKTRACE=1 cargo test day12
+```
