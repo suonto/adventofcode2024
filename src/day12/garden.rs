@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Pos {
     pub x: usize,
     pub y: usize,
@@ -27,10 +27,10 @@ impl PartialEq for Region {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct Plot {
-    // pub region_id: Pos,
     pub pos: Pos,
-    pub plant: char,
+    plant: char,
     pub fences: HashMap<direction::CardinalDirection, bool>,
 }
 
@@ -46,6 +46,14 @@ impl Plot {
                 (direction::CardinalDirection::West, false),
             ]),
         }
+    }
+
+    pub fn pos(&self) -> &Pos {
+        &self.pos
+    }
+
+    pub fn plant(&self) -> &char {
+        &self.plant
     }
 }
 
