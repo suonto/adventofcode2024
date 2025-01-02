@@ -1,5 +1,7 @@
+use std::vec;
+
 use fraction::GenericFraction;
-use vecmath::{vec2_add, Vector2};
+use vecmath::{vec2_add, vec2_scale, Vector2};
 
 type Vector = Vector2<u32>;
 type Machine = [Vector; 3];
@@ -126,6 +128,10 @@ fn optimize_nonparallel(machine_config: &Machine) -> Option<Optimization> {
 
     let multiplier: u32 = prize[0] / result[0];
 
+    if low_count * multiplier > 100 || high_count * multiplier > 100 {
+        return None;
+    }
+
     let a: u32 = if low == vec_a { low_count } else { high_count };
     let b: u32 = if low == vec_a { high_count } else { low_count };
 
@@ -181,6 +187,48 @@ pub fn solve(example: &str, _variant_b: bool) -> u32 {
     let mut total_tokens: u32 = 0;
     for machine_config in parse(example) {
         let optimization = optimize(&machine_config);
+
+        let vec_a: Vector = machine_config[0];
+        let vec_b: Vector = machine_config[1];
+        let prize: Vector = machine_config[2];
+
+        // sanity check optimization
+        if optimization.is_some() {
+            let opt = optimization.unwrap();
+            let result: Vector = vec2_add(vec2_scale(vec_a, opt[0]), vec2_scale(vec_b, opt[1]));
+
+            if opt[0] > 100 || opt[1] > 100 {
+                panic!(
+                    "Optimization over 100: {:?} {:?} {:?} produced: {:?}, which results in {:?}",
+                    vec_a, vec_b, prize, opt, result
+                );
+            }
+
+            if result != prize {
+                panic!(
+                    "Optimization failed: {:?} {:?} {:?} produced: {:?}, which results in {:?}",
+                    vec_a,
+                    vec_b,
+                    prize,
+                    opt,
+                    vec2_add(vec2_scale(vec_a, opt[0]), vec2_scale(vec_b, opt[1]))
+                );
+            }
+            let result_slope: Slope = Slope::new(result[1], result[0]);
+            let prize_slope: Slope = Slope::new(prize[1], prize[0]);
+
+            if result_slope != prize_slope {
+                panic!(
+                    "Optimization wrong slope: {:?} {:?} {:?} produced: {:?}, which results in {:?}",
+                    vec_a,
+                    vec_b,
+                    prize,
+                    optimization,
+                    vec2_add(vec2_scale(vec_a, opt[0]), vec2_scale(vec_b, opt[1]))
+                );
+            }
+        }
+
         let tokens = optimization.map_or(0, |opt| opt[0] * 3 + opt[1]);
         total_tokens += tokens;
         println!(
@@ -212,6 +260,16 @@ Prize: X=8400, Y=5400\
 ";
         let result = solve(example_0, false);
         assert_eq!(result, 80 * 3 + 40);
+    }
+
+    #[test]
+    fn solve_a_example_2() {
+        let example_0 = "Button A: X+17, Y+86\n\
+Button B: X+84, Y+37\n\
+Prize: X=7870, Y=6450\
+";
+        let result = solve(example_0, false);
+        assert_eq!(result, 38 * 3 + 86);
     }
 
     #[test]
