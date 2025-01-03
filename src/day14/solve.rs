@@ -25,13 +25,36 @@ pub fn parse(example: &str) -> Vec<Robot> {
 }
 
 pub fn solve(example: &str, _variant_b: bool) -> u32 {
+    let y_dimension: i32 = 7;
+    let x_dimension: i32 = 11;
+
+    let mut q1: u32 = 0;
+    let mut q2: u32 = 0;
+    let mut q3: u32 = 0;
+    let mut q4: u32 = 0;
     for mut robot in parse(example) {
-        println!("{:?}", robot);
-        robot.teleport(100, 11, 7);
-        println!("{:?}", robot);
+        robot.teleport(100, x_dimension, y_dimension);
+
+        if robot.y < y_dimension / 2 {
+            if robot.x < x_dimension / 2 {
+                q1 += 1;
+            } else if robot.x > x_dimension / 2 {
+                q2 += 1;
+            }
+        } else if robot.y > y_dimension / 2 {
+            if robot.x < x_dimension / 2 {
+                q3 += 1;
+            } else if robot.x > x_dimension / 2 {
+                q4 += 1;
+            }
+        }
     }
 
-    return 0;
+    let result = q1 * q2 * q3 * q4;
+
+    println!("{:?} * {:?} * {:?} * {:?} = {:?}", q1, q2, q3, q4, result);
+
+    return result;
 }
 
 #[cfg(test)]
