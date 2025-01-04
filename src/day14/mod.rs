@@ -4,4 +4,4 @@ pub mod solve;
 
 pub use examples::EXAMPLE;
 pub use robot::Robot;
-pub use solve::solve;
+pub use solve::{solve, solve_b};
