@@ -34,3 +34,15 @@ pub const EXAMPLE_SMALL: &str = "\
 
 <^^>>>vv<v>>v<<\
 ";
+
+pub const EXAMPLE_XS: &str = "\
+#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######
+
+<vv<<^^<<^^\
+";
