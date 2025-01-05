@@ -277,47 +277,171 @@ impl WarehouseB {
         println!("Move {:?}:", dir);
 
         // new position of jagger if it moves
-        let (j_x, j_y) = WarehouseB::step(x, y, dir);
+        let (j_x, j_y) = WarehouseB::step(x, y, dir, 1);
 
-        // while there's a box in front, check what's in front of the box
-        let mut push_boxes = false;
-        let (mut n_x, mut n_y) = WarehouseB::step(x, y, dir);
-        while self.boxes.contains(&Box { x: n_x, y: n_y }) {
-            push_boxes = true;
-            (n_x, n_y) = WarehouseB::step(n_x, n_y, dir);
-        }
-
-        // if a wall is encountered, nothing moves
-        if self.walls.contains(&Wall { x: n_x, y: n_y }) {
+        // if a wall is encountered, do not move
+        if self.walls.contains(&Wall { x: j_x, y: j_y }) {
             return false;
         }
 
-        // push boxes
-        if push_boxes {
-            println!("Push ({:?},{:?}) -> ({:?},{:?})", j_x, j_y, n_x, n_y);
-            self.boxes.insert(Box { x: n_x, y: n_y });
-            self.boxes.remove(&Box { x: j_x, y: j_y });
+        // if a box is not encountered, move
+        if !self.boxes.contains(&Box { x: j_x, y: j_y })
+            && !self.boxes.contains(&Box { x: j_x - 1, y: j_y })
+        {
+            self.jagger.x = j_x;
+            self.jagger.y = j_y;
+            return true;
         }
 
-        // move like Jagger
+        // if there is a box in front of jagger, begin box stack.
+        // record current_boxes to be deleted and new boxes
+        // in case there are any issues pushing boxes, return false
+        let mut current_boxes: Vec<Box> = Vec::new();
+        let mut moved_boxes: Vec<Box> = Vec::new();
+
+        // vertical push
+        if [CardinalDirection::North, CardinalDirection::South].contains(&dir) {
+            let mut xses = HashSet::from([x]);
+            let mut ny = y;
+
+            loop {
+                // false if any of the current xses is blocked from moving (by a wall)
+                for nx in &xses {
+                    let (step_x, step_y) = WarehouseB::step(*nx, ny, dir, 1);
+                    if self.walls.contains(&Wall {
+                        x: step_x,
+                        y: step_y,
+                    }) {
+                        return false;
+                    }
+                }
+
+                // resolve next boxes and add to stack
+                let next_boxes = self.next_vertical_boxes(&xses, ny, dir);
+                xses.clear();
+                for bx in &next_boxes {
+                    let (step_x, step_y) = WarehouseB::step(bx.x, bx.y, dir, 1);
+                    ny = step_y;
+
+                    // xses about to move
+                    xses.insert(step_x);
+                    xses.insert(step_x + 1);
+                }
+
+                // no more boxes
+                if next_boxes.is_empty() {
+                    break;
+                }
+            }
+        }
+
+        // horizontal push
+        if [CardinalDirection::East, CardinalDirection::West].contains(&dir) {
+            let mut nx = x;
+            let mut ny = y;
+            loop {
+                let (step_x, step_y) = WarehouseB::step(nx, ny, dir, 1);
+                if self.walls.contains(&Wall {
+                    x: step_x,
+                    y: step_y,
+                }) {
+                    return false;
+                }
+                let next_box = self.next_horizontal_box(nx, ny, dir);
+
+                if let Some(next_box) = next_box {
+                    current_boxes.push(next_box);
+
+                    moved_boxes.push(Box {
+                        x: WarehouseB::step(nx, ny, dir, 3).0,
+                        y: step_y,
+                    });
+                    (nx, ny) = WarehouseB::step(nx, ny, dir, 2);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // push boxes
+        for rm_box in current_boxes {
+            let (b_x, b_y) = WarehouseB::step(rm_box.x, rm_box.y, dir, 1);
+            self.boxes.remove(&Box {
+                x: rm_box.x,
+                y: rm_box.y,
+            });
+
+            println!(
+                "Push ({:?},{:?}) -> ({:?},{:?})",
+                rm_box.x, rm_box.y, b_x, b_y
+            );
+        }
+
+        for add_box in moved_boxes {
+            self.boxes.insert(Box {
+                x: add_box.x,
+                y: add_box.y,
+            });
+        }
+
+        // if there was no issue pushing boxes, move like Jagger
         self.jagger.x = j_x;
         self.jagger.y = j_y;
 
         return true;
     }
 
-    fn step(x: usize, y: usize, dir: CardinalDirection) -> (usize, usize) {
+    fn next_vertical_boxes(
+        &self,
+        xses: &HashSet<usize>,
+        y: usize,
+        dir: CardinalDirection,
+    ) -> Vec<Box> {
+        let mut boxes: Vec<Box> = Vec::new();
+        if [CardinalDirection::East, CardinalDirection::West].contains(&dir) {
+            panic!("Invalid vertical dir {:?}", dir);
+        }
+
+        for x in xses {
+            let (n_x, n_y) = WarehouseB::step(*x, y, dir, 1);
+            let bx = Box { x: n_x, y: n_y };
+
+            if self.boxes.contains(&bx) {
+                boxes.push(bx);
+            }
+        }
+
+        return boxes;
+    }
+
+    fn next_horizontal_box(&self, x: usize, y: usize, dir: CardinalDirection) -> Option<Box> {
+        if [CardinalDirection::North, CardinalDirection::South].contains(&dir) {
+            panic!("Invalid horizontal dir {:?}", dir);
+        }
+
+        let (n_x, n_y) = WarehouseB::step(x, y, dir, 2);
+        let bx = Box { x: n_x, y: n_y };
+
+        if self.boxes.contains(&bx) {
+            return Some(bx);
+        }
+
+        return None;
+    }
+
+    // returns new x, new y
+    fn step(x: usize, y: usize, dir: CardinalDirection, steps: usize) -> (usize, usize) {
         let mut n_x: usize = x;
         let mut n_y: usize = y;
 
         if dir == CardinalDirection::North {
-            n_y -= 1;
+            n_y -= steps;
         } else if dir == CardinalDirection::East {
-            n_x += 1;
+            n_x += steps;
         } else if dir == CardinalDirection::South {
-            n_y += 1;
+            n_y += steps;
         } else if dir == CardinalDirection::West {
-            n_x -= 1;
+            n_x -= steps;
         }
 
         return (n_x, n_y);

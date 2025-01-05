@@ -10,7 +10,10 @@ pub fn solve(example: &str, variant_b: bool) -> u32 {
         return result;
     } else {
         let mut warehouse = WarehouseB::new(example);
-        // warehouse.do_moves_like_jagger();
+        println!("Initial state:");
+        warehouse.print();
+
+        warehouse.do_moves_like_jagger();
 
         println!("Result:");
         let result = warehouse.print();
