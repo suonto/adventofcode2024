@@ -305,6 +305,7 @@ impl WarehouseB {
             let mut ny = y;
 
             loop {
+                println!("Moving {:?} at y {:?}, xses: {:?}", dir, ny, xses);
                 // false if any of the current xses is blocked from moving (by a wall)
                 for nx in &xses {
                     let (step_x, step_y) = WarehouseB::step(*nx, ny, dir, 1);
@@ -312,6 +313,10 @@ impl WarehouseB {
                         x: step_x,
                         y: step_y,
                     }) {
+                        println!(
+                            "Wall blocks ({:?},{:?}) -> ({:?},{:?})",
+                            nx, ny, step_x, step_y
+                        );
                         return false;
                     }
                 }
@@ -320,17 +325,23 @@ impl WarehouseB {
                 let next_boxes = self.next_vertical_boxes(&xses, ny, dir);
                 xses.clear();
                 for bx in &next_boxes {
-                    let (step_x, step_y) = WarehouseB::step(bx.x, bx.y, dir, 1);
-                    ny = step_y;
+                    ny = bx.y;
 
                     // xses about to move
-                    xses.insert(step_x);
-                    xses.insert(step_x + 1);
+                    xses.insert(bx.x);
+                    xses.insert(bx.x + 1);
                 }
 
                 // no more boxes
                 if next_boxes.is_empty() {
                     break;
+                }
+
+                for bx in next_boxes {
+                    let (nx, ny) = WarehouseB::step(bx.x, bx.y, dir, 1);
+                    current_boxes.push(bx);
+
+                    moved_boxes.push(Box { x: nx, y: ny });
                 }
             }
         }
@@ -404,10 +415,13 @@ impl WarehouseB {
 
         for x in xses {
             let (n_x, n_y) = WarehouseB::step(*x, y, dir, 1);
-            let bx = Box { x: n_x, y: n_y };
+            let bx1 = Box { x: n_x, y: n_y };
+            let bx2 = Box { x: n_x - 1, y: n_y };
 
-            if self.boxes.contains(&bx) {
-                boxes.push(bx);
+            if self.boxes.contains(&bx1) {
+                boxes.push(bx1);
+            } else if self.boxes.contains(&bx2) {
+                boxes.push(bx2);
             }
         }
 
