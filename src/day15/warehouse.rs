@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use direction::CardinalDirection;
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 struct Box {
     pub x: usize,
     pub y: usize,
@@ -348,44 +348,66 @@ impl WarehouseB {
 
         // horizontal push
         if [CardinalDirection::East, CardinalDirection::West].contains(&dir) {
-            let mut nx = x;
-            let mut ny = y;
+            let (nx, ny) = WarehouseB::step(
+                x,
+                y,
+                dir,
+                if dir == CardinalDirection::West { 2 } else { 1 },
+            );
+            let mut bx = *self.boxes.get(&Box { x: nx, y: ny }).unwrap();
+
             loop {
-                let (step_x, step_y) = WarehouseB::step(nx, ny, dir, 1);
-                if self.walls.contains(&Wall {
-                    x: step_x,
-                    y: step_y,
-                }) {
+                if dir == CardinalDirection::West
+                    && self.walls.contains(&Wall {
+                        x: bx.x - 1,
+                        y: bx.y,
+                    })
+                {
+                    println!(
+                        "Wall blocks ({:?},{:?}) -> ({:?},{:?})",
+                        bx.x,
+                        bx.y,
+                        bx.x - 1,
+                        bx.y
+                    );
+                    return false;
+                } else if dir == CardinalDirection::East
+                    && self.walls.contains(&Wall {
+                        x: bx.x + 2,
+                        y: bx.y,
+                    })
+                {
+                    println!(
+                        "Wall blocks ({:?},{:?}) -> ({:?},{:?})",
+                        &bx.x,
+                        &bx.y,
+                        &bx.x + 1,
+                        &bx.y
+                    );
                     return false;
                 }
-                let next_box = self.next_horizontal_box(nx, ny, dir);
 
-                if let Some(next_box) = next_box {
-                    current_boxes.push(next_box);
+                current_boxes.push(bx);
 
-                    moved_boxes.push(Box {
-                        x: WarehouseB::step(nx, ny, dir, 3).0,
-                        y: step_y,
-                    });
-                    (nx, ny) = WarehouseB::step(nx, ny, dir, 2);
-                } else {
+                let n_x = WarehouseB::step(bx.x, bx.y, dir, 1).0;
+                moved_boxes.push(Box { x: n_x, y: bx.y });
+                println!("Push ({:?},{:?}) -> ({:?},{:?})", bx.x, bx.y, n_x, bx.y);
+
+                let next_box = self.next_horizontal_box(bx.x, bx.y, dir);
+
+                if next_box.is_none() {
                     break;
                 }
+                bx = next_box.unwrap();
             }
         }
 
         // push boxes
         for rm_box in current_boxes {
-            let (b_x, b_y) = WarehouseB::step(rm_box.x, rm_box.y, dir, 1);
             self.boxes.remove(&Box {
                 x: rm_box.x,
                 y: rm_box.y,
             });
-
-            println!(
-                "Push ({:?},{:?}) -> ({:?},{:?})",
-                rm_box.x, rm_box.y, b_x, b_y
-            );
         }
 
         for add_box in moved_boxes {
