@@ -1,4 +1,7 @@
-use std::{collections::HashMap, fmt};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt,
+};
 
 use direction::{CardinalDirection, Coord};
 
@@ -57,6 +60,8 @@ impl Tile {
 }
 
 pub struct Maze {
+    start: Coord,
+    end: Coord,
     tiles: Vec<Vec<Tile>>,
     reindeers: Vec<Reindeer>,
     pub finished: Vec<Reindeer>,
@@ -66,12 +71,15 @@ impl Maze {
     pub fn new(input: &str) -> Self {
         let mut tiles: Vec<Vec<Tile>> = Vec::new();
         let mut start: Option<Coord> = None;
+        let mut end: Option<Coord> = None;
 
         for (y, line) in input.split("\n").enumerate() {
             let mut row: Vec<Tile> = Vec::new();
             for (x, c) in line.chars().enumerate() {
                 if c == 'S' {
                     start = Some(Coord::new(x.try_into().unwrap(), y.try_into().unwrap()));
+                } else if c == 'E' {
+                    end = Some(Coord::new(x.try_into().unwrap(), y.try_into().unwrap()));
                 }
                 row.push(Tile::new(c));
             }
@@ -79,8 +87,11 @@ impl Maze {
         }
 
         let start = start.unwrap();
+        let end = end.unwrap();
 
         Self {
+            start,
+            end,
             tiles,
             reindeers: Vec::from([
                 Reindeer {
@@ -105,7 +116,7 @@ impl Maze {
     fn blocked(&self, coord: &Coord, dir: &CardinalDirection, score: u32) -> bool {
         let new_pos = coord + dir.coord();
         let blocked = self.tiles[new_pos.y as usize][new_pos.x as usize].char == '#'
-            || self.tiles[coord.y as usize][coord.x as usize].tracks[dir] <= score;
+            || self.tiles[coord.y as usize][coord.x as usize].tracks[dir] < score;
         return blocked;
     }
 
@@ -135,7 +146,7 @@ impl Maze {
             }
 
             // move current reindeer
-            if !self.blocked(&reindeer.pos, &reindeer.orientation, reindeer.score + 1) {
+            if !self.blocked(&reindeer.pos, &reindeer.orientation, reindeer.score) {
                 let new_pos = reindeer.pos + reindeer.orientation.coord();
                 self.at(reindeer.pos)
                     .tracks
@@ -149,7 +160,10 @@ impl Maze {
                     coord: reindeer.pos,
                     dir: reindeer.orientation,
                 });
-                println!("{:?} advancing -> {:?}", reindeer.pos, reindeer.orientation);
+                println!(
+                    "{:?} {:?} advancing -> {:?}",
+                    reindeer.pos, reindeer.score, reindeer.orientation
+                );
                 reindeer.pos = new_pos;
                 reindeer.score += 1;
 
@@ -167,6 +181,26 @@ impl Maze {
     pub fn winner_score(&self) -> u32 {
         // min score in reindeer scores
         return self.finished.iter().map(|r| r.score).min().unwrap_or(0);
+    }
+
+    pub fn best_seats(&self) -> u32 {
+        let winner_score = self.winner_score();
+        let best_reindeers = self
+            .finished
+            .iter()
+            .filter(|r| r.score == winner_score)
+            .collect::<Vec<&Reindeer>>();
+
+        let mut best_seats: HashSet<Coord> = HashSet::new();
+        for reindeer in best_reindeers {
+            for step in reindeer.path.iter() {
+                best_seats.insert(step.coord);
+            }
+        }
+        best_seats.insert(self.start);
+        best_seats.insert(self.end);
+
+        return best_seats.len().try_into().unwrap();
     }
 
     pub fn print(&self, reindeer: Option<&Reindeer>) {

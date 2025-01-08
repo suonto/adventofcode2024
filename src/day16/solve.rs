@@ -1,6 +1,6 @@
 use super::Maze;
 
-pub fn solve(example: &str, _variant_b: bool) -> u32 {
+pub fn solve(example: &str, variant_b: bool) -> u32 {
     let mut maze = Maze::new(example);
     while !maze.move_reindeers() {
         maze.print(None);
@@ -11,7 +11,11 @@ pub fn solve(example: &str, _variant_b: bool) -> u32 {
         maze.print(Some(reindeer));
     }
 
-    return maze.winner_score();
+    if !variant_b {
+        return maze.winner_score();
+    }
+
+    return maze.best_seats();
 }
 
 #[cfg(test)]
@@ -31,9 +35,15 @@ mod tests {
         assert_eq!(result, 11048);
     }
 
-    // #[test]
-    // fn solve_b_example() {
-    //     let result = solve(EXAMPLE, true);
-    //     assert_eq!(result, 9021);
-    // }
+    #[test]
+    fn solve_b_example_1() {
+        let result = solve(EXAMPLE_1, true);
+        assert_eq!(result, 45);
+    }
+
+    #[test]
+    fn solve_b_example_2() {
+        let result = solve(EXAMPLE_2, true);
+        assert_eq!(result, 64);
+    }
 }
