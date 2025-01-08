@@ -33,7 +33,8 @@ pub struct Reindeer {
 struct Tile {
     pub char: char,
     // tile contains tracks to each direction where a reindeer has went before
-    pub tracks: HashMap<CardinalDirection, bool>,
+    // and the score of the reindeer that went through that track
+    pub tracks: HashMap<CardinalDirection, u32>,
 }
 impl fmt::Display for Tile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -46,10 +47,10 @@ impl Tile {
         Self {
             char,
             tracks: HashMap::from([
-                (CardinalDirection::North, false),
-                (CardinalDirection::East, false),
-                (CardinalDirection::South, false),
-                (CardinalDirection::West, false),
+                (CardinalDirection::North, u32::MAX),
+                (CardinalDirection::East, u32::MAX),
+                (CardinalDirection::South, u32::MAX),
+                (CardinalDirection::West, u32::MAX),
             ]),
         }
     }
@@ -99,10 +100,12 @@ impl Maze {
         }
     }
 
-    fn blocked(&self, coord: &Coord, dir: &CardinalDirection) -> bool {
+    /// blocked if there's a wall in the next tile
+    /// or if a reindeer with lesser score has passed into that tile
+    fn blocked(&self, coord: &Coord, dir: &CardinalDirection, score: u32) -> bool {
         let new_pos = coord + dir.coord();
         let blocked = self.tiles[new_pos.y as usize][new_pos.x as usize].char == '#'
-            || self.tiles[coord.y as usize][coord.x as usize].tracks[dir];
+            || self.tiles[coord.y as usize][coord.x as usize].tracks[dir] <= score;
         return blocked;
     }
 
@@ -114,31 +117,32 @@ impl Maze {
     pub fn move_reindeers(&mut self) -> bool {
         let mut new_reindeers: Vec<Reindeer> = Vec::new();
         for mut reindeer in self.reindeers.clone() {
+            let turn_score = reindeer.score + 1000;
             // spawn new reindeer left
-            if !self.blocked(&reindeer.pos, &reindeer.orientation.left90()) {
+            if !self.blocked(&reindeer.pos, &reindeer.orientation.left90(), turn_score) {
                 let mut left = reindeer.clone();
                 left.orientation = reindeer.orientation.left90();
-                left.score = reindeer.score + 1000;
+                left.score = turn_score;
                 new_reindeers.push(left);
             }
 
             // spawn new reindeer right
-            if !self.blocked(&reindeer.pos, &reindeer.orientation.right90()) {
+            if !self.blocked(&reindeer.pos, &reindeer.orientation.right90(), turn_score) {
                 let mut right = reindeer.clone();
                 right.orientation = reindeer.orientation.right90();
-                right.score = reindeer.score + 1000;
+                right.score = turn_score;
                 new_reindeers.push(right);
             }
 
             // move current reindeer
-            if !self.blocked(&reindeer.pos, &reindeer.orientation) {
+            if !self.blocked(&reindeer.pos, &reindeer.orientation, reindeer.score + 1) {
                 let new_pos = reindeer.pos + reindeer.orientation.coord();
                 self.at(reindeer.pos)
                     .tracks
-                    .insert(reindeer.orientation, true);
+                    .insert(reindeer.orientation, reindeer.score);
                 self.at(new_pos)
                     .tracks
-                    .insert(reindeer.orientation.opposite(), true);
+                    .insert(reindeer.orientation.opposite(), reindeer.score);
 
                 // move reindeer
                 reindeer.path.push(Step {
