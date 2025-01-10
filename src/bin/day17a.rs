@@ -1,5 +1,5 @@
-use aoc2024::day16::*;
+use aoc2024::day17::*;
 
 fn main() {
-    println!("Result: {}", solve(EXAMPLE_1, false));
+    println!("Result: {}", solve(EXAMPLE, false));
 }

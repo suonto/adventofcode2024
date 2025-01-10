@@ -1,10 +1,12 @@
 use super::Computer;
 
-pub fn solve(example: &str, _variant_b: bool) -> &str {
-    let computer = Computer::new(example);
+pub fn solve(example: &str, _variant_b: bool) -> String {
+    let mut computer = Computer::new(example);
     println!("Initial state: {:?}", computer);
+    computer.run();
 
-    return "0";
+    println!("Output: {:?}", computer.output());
+    return computer.output();
 }
 
 #[cfg(test)]
