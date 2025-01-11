@@ -1,5 +1,7 @@
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Computer {
+    seed: usize,
+    record: usize,
     pub a: usize,
     pub b: usize,
     pub c: usize,
@@ -12,6 +14,7 @@ impl Computer {
         let mut a: usize = 0;
         let mut b: usize = 0;
         let mut c: usize = 0;
+        let mut seed: usize = 0;
         let mut program: Vec<usize> = Vec::new();
         for line in input.lines() {
             if line.len() == 0 {
@@ -25,6 +28,7 @@ impl Computer {
                 let val: usize = parts[2].trim().parse().unwrap();
                 if reg == 'A' {
                     a = val;
+                    seed = val;
                 } else if reg == 'B' {
                     b = val;
                 } else {
@@ -41,6 +45,8 @@ impl Computer {
         }
 
         Self {
+            seed,
+            record: 0,
             a,
             b,
             c,
@@ -49,10 +55,43 @@ impl Computer {
         }
     }
 
-    pub fn run(&mut self) {
-        let mut i = 0;
-        while i < self.program.len() {
-            i = self.exec(i);
+    pub fn run(&mut self, variant_b: bool) {
+        if !variant_b {
+            let mut i = 0;
+            while i < self.program.len() {
+                i = self.exec(i);
+            }
+        } else {
+            // self.seed = 235990000000000;
+            self.seed = 236539226447550;
+            loop {
+                self.a = self.seed;
+
+                if self.seed % 1000000000 == 0 {
+                    println!("Seed {0} ({0:>64.b})", self.seed);
+                }
+
+                // if ((((self.seed % 8) ^ 3) ^ 5) ^ (self.seed / 16)) % 8 != 2 {
+                //     self.seed += 1024;
+                //     continue;
+                // }
+
+                self.b = 0;
+                self.c = 0;
+                self.output.clear();
+
+                let mut i = 0;
+                while i < self.program.len() {
+                    i = self.exec(i);
+                    // println!("a: {}, b: {}, c: {}", self.a, self.b, self.c);
+                }
+
+                // println!("Seed {:?}", self.seed);
+                // if self.program.len() == self.output.len() {
+                //     break;
+                // }
+                self.seed -= 1;
+            }
         }
     }
 
@@ -96,7 +135,28 @@ impl Computer {
         // out
         else if opcode == 5 {
             let combo_operand = self.combo(operand);
-            self.output.push(combo_operand % 8);
+            let out = combo_operand % 8;
+            if self.program[self.output.len()] == out {
+                self.output.push(out);
+                if self.program.len() == self.output.len() {
+                    println!(
+                        "Seed {0:>16}, {0:>64.b} produced: {1:?}",
+                        self.seed,
+                        self.output()
+                    );
+                    return self.program.len();
+                }
+            } else {
+                if self.output.len() > self.record {
+                    self.record = self.output.len();
+                    println!(
+                        "Seed {0:>16} ({0:>64.b}), out {out}, produced: {1:?}",
+                        self.seed,
+                        self.output()
+                    );
+                }
+                return self.program.len();
+            }
         }
         // bdv
         else if opcode == 6 {
