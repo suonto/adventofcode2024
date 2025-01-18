@@ -74,8 +74,8 @@ impl Ram {
             && coord.y < self.ram.len() as i32
     }
 
-    pub fn find_path(&mut self) -> Path {
-        let result = 'outer: loop {
+    pub fn find_path(&mut self) -> Option<Path> {
+        let result: Option<Path> = 'outer: loop {
             let mut new_paths: Vec<Path> = Vec::new();
             for path in self.paths.iter() {
                 let pos = path[path.len() - 1];
@@ -87,7 +87,7 @@ impl Ram {
                     {
                         let mut p = path.clone();
                         p.add(neighbor);
-                        break 'outer p;
+                        break 'outer Some(p);
                     }
 
                     // avoid bad coords
@@ -109,23 +109,29 @@ impl Ram {
 
                     // avoid walls
                     let is_wall = self.ram[neighbor.y as usize][neighbor.x as usize] == -1;
-                    println!("Checking if is wall {:?}: {:?}", neighbor, is_wall);
+                    // println!("Checking if is wall {:?}: {:?}", neighbor, is_wall);
                     if is_wall {
                         continue;
                     }
 
-                    println!("{:?} -> {:?}", pos, neighbor);
+                    // println!("{:?} -> {:?}", pos, neighbor);
 
                     let mut new_path = path.clone();
                     new_path.add(neighbor);
                     new_paths.push(new_path);
                 }
             }
+            if new_paths.is_empty() {
+                break None;
+            }
             self.paths = new_paths;
             self.print();
         };
 
-        self.paths = vec![result.clone()];
+        if result.is_some() {
+            self.paths = vec![result.clone().unwrap()];
+        }
+
         return result;
     }
 
