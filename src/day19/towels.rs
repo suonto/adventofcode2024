@@ -14,9 +14,12 @@ pub fn parse(input: &str) -> (Vec<&str>, Vec<&str>) {
 }
 
 /// returns a selection, which is a vector of pattern indices if design is possible
-pub fn select(patterns: &Vec<&str>, design: &str) -> Option<Vec<usize>> {
+pub fn select(patterns: &Vec<&str>, design: &str, without_exact: bool) -> Option<Vec<usize>> {
     for (i, pattern) in patterns.iter().enumerate() {
         if design.starts_with(pattern) {
+            if design == *pattern && without_exact {
+                continue;
+            }
             let remaining = &design[pattern.len()..];
 
             let mut result: Vec<usize> = Vec::from([i]);
@@ -24,7 +27,7 @@ pub fn select(patterns: &Vec<&str>, design: &str) -> Option<Vec<usize>> {
                 return Some(result);
             }
 
-            let sub_design = select(patterns, remaining);
+            let sub_design = select(patterns, remaining, false);
 
             if sub_design.is_some() {
                 result.extend(sub_design.unwrap().into_iter());
