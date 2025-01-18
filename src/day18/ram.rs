@@ -11,7 +11,12 @@ pub struct Path {
 
 impl fmt::Debug for Path {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Path[{:?}]", self.steps)
+        let steps: Vec<String> = self
+            .steps
+            .iter()
+            .map(|s| format!("({},{})", s.x, s.y))
+            .collect();
+        write!(f, "Path[{:?}]", steps)
     }
 }
 
@@ -49,22 +54,22 @@ pub struct Ram {
 }
 
 impl Ram {
-    pub fn corrupt(&mut self, input: &str, limit: usize) {
-        for (i, line) in input.lines().enumerate() {
-            if i == limit {
-                break;
-            }
-
-            let parts: Vec<usize> = line
+    pub fn corrupt(&mut self, lines: &Vec<&str>, start: usize, end: usize) -> Coord {
+        let mut coord = Coord { x: 0, y: 0 };
+        for i in start..end {
+            let parts: Vec<usize> = lines[i]
                 .split(',')
                 .map(|s| s.parse::<usize>().unwrap())
                 .collect();
 
             let x = parts[0];
             let y = parts[1];
-            println!("Corrupted {x},{y}");
             self.ram[y][x] = -1;
+
+            coord.x = x as i32;
+            coord.y = y as i32;
         }
+        return coord;
     }
 
     fn contains(&self, coord: &Coord) -> bool {
@@ -75,6 +80,11 @@ impl Ram {
     }
 
     pub fn find_path(&mut self) -> Option<Path> {
+        self.paths = Vec::from([Path {
+            steps: vec![Coord { x: 0, y: 0 }],
+            visited: HashSet::from([Coord { x: 0, y: 0 }]),
+        }]);
+
         let result: Option<Path> = 'outer: loop {
             let mut new_paths: Vec<Path> = Vec::new();
             for path in self.paths.iter() {
@@ -125,7 +135,7 @@ impl Ram {
                 break None;
             }
             self.paths = new_paths;
-            self.print();
+            // self.print();
         };
 
         if result.is_some() {
