@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use super::towels::{parse, print, select};
 
 pub fn solve(example: &str) -> usize {
@@ -6,22 +8,19 @@ pub fn solve(example: &str) -> usize {
     println!("Patterns {:?}", patterns);
 
     let mut count: usize = 0;
+    let mut cache: HashMap<&str, usize> = HashMap::new();
     for design in designs.iter() {
-        let filtered: Vec<&str> = patterns
+        let included: Vec<&str> = patterns
             .clone()
             .into_iter()
-            .filter(|p| design.contains(p) && select(&patterns, p, true).is_none())
+            .filter(|p| design.contains(p))
             .collect();
         println!("Design {}", design);
-        println!("Filtered patterns {:?}", filtered);
-        let selection = select(&filtered, design, false);
+        println!("Included patterns {:?}", included);
+        let selection = select(&included, design, &mut cache);
 
-        if selection.is_some() {
-            count += 1;
-            print(&filtered, &selection.unwrap());
-        } else {
-            println!("Impossible");
-        }
+        count += selection;
+        println!("Design {design} count: {selection}, total {count}");
     }
 
     return count;

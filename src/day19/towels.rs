@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 /// returns (patterns, designs) tuple
 pub fn parse(input: &str) -> (Vec<&str>, Vec<&str>) {
     let mut patterns: Vec<&str> = Vec::new();
@@ -13,30 +15,36 @@ pub fn parse(input: &str) -> (Vec<&str>, Vec<&str>) {
     return (patterns, designs);
 }
 
-/// returns a selection, which is a vector of pattern indices if design is possible
-pub fn select(patterns: &Vec<&str>, design: &str, without_exact: bool) -> Option<Vec<usize>> {
-    for (i, pattern) in patterns.iter().enumerate() {
+pub fn select<'a, 'b>(
+    patterns: &'a Vec<&'a str>,
+    design: &'b str,
+    cache: &mut HashMap<&'b str, usize>,
+) -> usize
+where
+    'b: 'a,
+{
+    let mut count: usize = 0;
+    for pattern in patterns.iter() {
         if design.starts_with(pattern) {
-            if design == *pattern && without_exact {
-                continue;
-            }
             let remaining = &design[pattern.len()..];
 
-            let mut result: Vec<usize> = Vec::from([i]);
             if remaining.is_empty() {
-                return Some(result);
+                count += 1;
             }
 
-            let sub_design = select(patterns, remaining, false);
-
-            if sub_design.is_some() {
-                result.extend(sub_design.unwrap().into_iter());
-                return Some(result);
+            let sub_result = cache.get(remaining);
+            if sub_result.is_some() {
+                let sub_result = sub_result.unwrap();
+                count += sub_result;
+            } else {
+                let sub_result = select(patterns, remaining, cache);
+                cache.insert(remaining, sub_result);
+                count += sub_result;
             }
         }
     }
 
-    return None;
+    return count;
 }
 
 pub fn print(patterns: &Vec<&str>, selection: &Vec<usize>) {
