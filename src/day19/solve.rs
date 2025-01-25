@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::towels::{parse, print, select};
+use super::towels::{parse, select};
 
 pub fn solve(example: &str) -> usize {
     let (patterns, designs) = parse(example);
