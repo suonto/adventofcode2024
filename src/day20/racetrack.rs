@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use direction::{CardinalDirection, CardinalDirections, Coord};
+use direction::{CardinalDirections, Coord};
 
 /// track segment stores dist to start and end
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
@@ -17,11 +17,11 @@ pub struct Cheat {
 }
 
 pub struct Track {
-    start: Coord,
-    end: Coord,
+    pub start: Coord,
+    pub end: Coord,
     segments: HashMap<Coord, Segment>,
     walls: HashSet<Coord>,
-    cheats: HashMap<usize, Vec<Cheat>>,
+    pub cheats: HashMap<usize, Vec<Cheat>>,
 }
 
 impl Track {
@@ -50,8 +50,22 @@ impl Track {
                     walls.insert(coord);
                 } else if c == 'S' {
                     start = Some(coord);
+                    segments.insert(
+                        coord,
+                        Segment {
+                            s_dist: 0,
+                            e_dist: 0,
+                        },
+                    );
                 } else if c == 'E' {
                     end = Some(coord);
+                    segments.insert(
+                        coord,
+                        Segment {
+                            s_dist: 0,
+                            e_dist: 0,
+                        },
+                    );
                 } else {
                     panic!("Weird char: {:?}", c);
                 }
@@ -72,46 +86,53 @@ impl Track {
 
     /// populate segment distances
     pub fn populate(&mut self) {
-        let track_len = self.segments.len() + 1;
-        let mut pos_opt: Option<Coord> = self.next_pos(&self.start);
+        // populate start
+        let track_len = self.segments.len() - 1;
+
+        let mut pos_opt: Option<Coord> = Some(self.start);
         let mut s_dist: usize = 0;
 
         while let Some(pos) = pos_opt {
-            s_dist += 1;
             let seg = self.segments.get_mut(&pos).unwrap();
             seg.s_dist = s_dist;
             seg.e_dist = track_len - s_dist;
 
             println!("Race track at {:?}: {:?}", &pos, &seg);
             pos_opt = self.next_pos(&pos);
+            s_dist += 1;
         }
     }
 
     pub fn cheats(&mut self) {
-        for (coord, seg) in self.segments.iter() {}
+        let keys: Vec<Coord> = self.segments.keys().map(|coord| coord.clone()).collect();
+        for coord in keys {
+            self.cheat(coord);
+        }
     }
 
     // cheat if possible
-    fn cheat(&self, pos: Coord) -> Option<Cheat> {
+    fn cheat(&mut self, pos: Coord) {
         for dir in CardinalDirections {
             let wall_pos = pos + dir.coord();
             let next_pos = wall_pos + dir.coord();
             if self.walls.contains(&wall_pos) && self.segments.contains_key(&next_pos) {
                 let from_seg = self.segments.get(&pos).unwrap();
                 let to_seg = self.segments.get(&next_pos).unwrap();
-                if from_seg.e_dist < to_seg.e_dist {
-                    self.cheats.insert(
-                        from_seg.e_dist - to_seg.e_dist,
-                        Cheat {
-                            from: pos,
-                            to: next_pos,
-                        },
-                    );
+                if from_seg.e_dist > to_seg.e_dist {
+                    // -2 due to it taking 2 picoseconds to get there
+                    let save = from_seg.e_dist - to_seg.e_dist - 2;
+                    let cheat = Cheat {
+                        from: pos,
+                        to: next_pos,
+                    };
+                    if let Some(cheats) = self.cheats.get_mut(&save) {
+                        cheats.push(cheat);
+                    } else {
+                        self.cheats.insert(save, vec![cheat]);
+                    }
                 }
             }
         }
-
-        return None;
     }
 
     fn next_pos(&self, pos: &Coord) -> Option<Coord> {
