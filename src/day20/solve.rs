@@ -1,12 +1,14 @@
+use std::collections::HashSet;
+
 use super::{Cheat, Track};
 
-pub fn solve(example: &str, _variant_b: bool) -> usize {
+pub fn solve(example: &str, min: usize) -> usize {
     let mut track = Track::new(example);
 
     track.populate();
-    track.cheats();
+    track.cheats(min);
 
-    let mut cheats: Vec<(&usize, &Vec<Cheat>)> = track.cheats.iter().collect();
+    let mut cheats: Vec<(&usize, &HashSet<Cheat>)> = track.cheats.iter().collect();
     cheats.sort_by(|(a0, _), (b0, _)| a0.cmp(b0));
 
     let mut result: usize = 0;
@@ -17,7 +19,7 @@ pub fn solve(example: &str, _variant_b: bool) -> usize {
             save
         );
 
-        if *save >= 100 {
+        if *save >= min {
             result += cheats.len();
         }
     }
@@ -30,9 +32,15 @@ mod tests {
 
     use super::super::*;
 
+    // #[test]
+    // fn solve_a_example() {
+    //     let result = solve(EXAMPLE, 100);
+    //     assert_eq!(result, 0);
+    // }
+
     #[test]
-    fn solve_a_example() {
-        let result = solve(EXAMPLE, false);
-        assert_eq!(result, 0);
+    fn solve_b_example() {
+        let result = solve(EXAMPLE, 50);
+        assert_eq!(result, 285);
     }
 }
