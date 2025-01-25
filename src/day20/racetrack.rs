@@ -21,7 +21,6 @@ pub struct Track {
     pub start: Coord,
     pub end: Coord,
     segments: HashMap<Coord, Segment>,
-    walls: HashSet<Coord>,
     pub cheats: HashMap<usize, HashSet<Cheat>>,
     y_size: usize,
     x_size: usize,
@@ -30,7 +29,6 @@ pub struct Track {
 impl Track {
     pub fn new(input: &str) -> Self {
         let mut segments: HashMap<Coord, Segment> = HashMap::new();
-        let mut walls: HashSet<Coord> = HashSet::new();
         let mut start: Option<Coord> = None;
         let mut end: Option<Coord> = None;
         let mut y_size: usize = 0;
@@ -53,8 +51,6 @@ impl Track {
                             e_dist: 0,
                         },
                     );
-                } else if c == '#' {
-                    walls.insert(coord);
                 } else if c == 'S' {
                     start = Some(coord);
                     segments.insert(
@@ -73,8 +69,6 @@ impl Track {
                             e_dist: 0,
                         },
                     );
-                } else {
-                    panic!("Weird char: {:?}", c);
                 }
             }
         }
@@ -88,7 +82,6 @@ impl Track {
             y_size,
             x_size,
             segments,
-            walls,
             cheats: HashMap::new(),
         }
     }
@@ -122,7 +115,7 @@ impl Track {
     // cheat if possible
     fn cheat(&mut self, pos: Coord, min: usize) {
         let mut limit: usize = 20;
-        if min == 0 {
+        if min == 1 {
             limit = 2;
         }
 

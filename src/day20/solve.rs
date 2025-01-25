@@ -32,11 +32,11 @@ mod tests {
 
     use super::super::*;
 
-    // #[test]
-    // fn solve_a_example() {
-    //     let result = solve(EXAMPLE, 100);
-    //     assert_eq!(result, 0);
-    // }
+    #[test]
+    fn solve_a_example() {
+        let result = solve(EXAMPLE, 1);
+        assert_eq!(result, 44);
+    }
 
     #[test]
     fn solve_b_example() {
