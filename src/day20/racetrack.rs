@@ -128,12 +128,17 @@ impl Track {
 
         let from_seg = self.segments.get(&pos).unwrap();
 
-        for y in
-            cmp::max(0, pos.y - limit as i32)..cmp::min(self.y_size as i32, pos.y + limit as i32)
+        for y in cmp::max(0, pos.y - limit as i32)
+            ..cmp::min(self.y_size as i32 - 1, pos.y + limit as i32 + 1)
         {
             let y_diff: usize = (y - pos.y).abs() as usize;
             let x_min = cmp::max(0, pos.x - (limit as i32 - y_diff as i32));
-            let x_max = cmp::min(self.x_size as i32, pos.y + (limit as i32 - y_diff as i32));
+            let x_max = cmp::min(
+                self.x_size as i32 - 1,
+                pos.x + (limit as i32 - y_diff as i32) + 1,
+            );
+            // println!("From {:?}: Y {y} X MIN {x_min} AND MAX {x_max}", pos);
+
             for x in x_min..x_max {
                 let x_diff = (x - pos.x).abs() as usize;
                 let cheat_len = x_diff + y_diff;
